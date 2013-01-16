@@ -7,7 +7,8 @@
    </head>
    <body>
       <h2>Update Status</h2>
-      <button onclick="readTX()">Read Tx</button>
+      <input type="checkbox" id="autoread" onclick="autoReadTx()">Auto Read Tx<br>
+      <button id="readTx" onclick="readTX()">Read Tx</button>
 
       <h2>Transmitter Status</h2>
       <p>Alarm Code : <span id="AlarmCode">-</span></p>

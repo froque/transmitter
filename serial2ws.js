@@ -2,6 +2,7 @@ var sess = null;
 var wsuri = "ws://" + window.location.hostname + ":8081";
 var retryCount = 0;
 var retryDelay = 2;
+var interval;
 
 // Callback used in PubSub for updating Transmitter Status
 function TransmitterStatus(topicUri, event) {
@@ -23,6 +24,16 @@ function TransmitterStatus(topicUri, event) {
 
 function readTX() {
    sess.call("rpc:read-tx");
+}
+
+function autoReadTx() {
+  if (autoread.checked == true) {
+    readTx.disabled = true;
+    interval = window.setInterval(readTX,2000);
+  } else {
+    readTx.disabled = false;
+    window.clearInterval(interval);
+  }
 }
 
 function connect() {
