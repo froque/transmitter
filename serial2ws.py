@@ -42,14 +42,15 @@ from autobahn.wamp import WampServerFactory, WampServerProtocol, exportRpc
 
 class Serial2WsOptions(usage.Options):
    optParameters = [
-      ['baudrate', 'b', 9600, 'Serial baudrate'],
-      ['port', 'p', 3, 'Serial port to use'],
+      ['baudrate', 'b', 19200, 'Serial baudrate'],
+      ['port', 'p', '/dev/ttyUSB0', 'Serial port to use'],
       ['webport', 'w', 8080, 'Web port to use for embedded Web server'],
       ['wsurl', 's', "ws://localhost:9000", 'WebSocket port to use for embedded WebSocket server']
    ]
 
 
 ## MCU protocol
+## knows nothing about websockets
 ##
 class McuProtocol(LineReceiver):
 
@@ -80,6 +81,7 @@ class McuProtocol(LineReceiver):
          ## parse data received from MCU
          ##
          data = [int(x) for x in line.split()]
+         print line, data
 
          ## construct PubSub event from raw data
          ##
@@ -89,12 +91,14 @@ class McuProtocol(LineReceiver):
          ##
          self.wsMcuFactory.dispatch("http://example.com/mcu#analog-value", evt)
 
-         log.msg("Analog value: %s" % str(evt));
+#         log.msg("Analog value: %s" % str(evt));
       except ValueError:
          log.err('Unable to parse value %s' % line)
 
 
 ## WS-MCU protocol
+## knows about websockets
+## registers for RPC and PubSub
 ##
 class WsMcuProtocol(WampServerProtocol):
 
@@ -109,7 +113,8 @@ class WsMcuProtocol(WampServerProtocol):
 
 
 ## WS-MCU factory
-##
+## knows about websockets
+## 
 class WsMcuFactory(WampServerFactory):
 
    protocol = WsMcuProtocol
@@ -132,7 +137,7 @@ if __name__ == '__main__':
       sys.exit(1)
 
    baudrate = int(o.opts['baudrate'])
-   port = int(o.opts['port'])
+   port = o.opts['port']
    webport = int(o.opts['webport'])
    wsurl = o.opts['wsurl']
 
@@ -143,11 +148,11 @@ if __name__ == '__main__':
    ## create Serial2Ws gateway factory
    ##
    wsMcuFactory = WsMcuFactory(wsurl)
-   listenWS(wsMcuFactory)
+   listenWS(wsMcuFactory)               ## calls reactor internally
 
    ## create serial port and serial port protocol
    ##
-   log.msg('About to open serial port %d [%d baud] ..' % (port, baudrate))
+   log.msg('About to open serial port %s [%d baud] ..' % (port, baudrate))
    serialPort = SerialPort(wsMcuFactory.mcuProtocol, port, reactor, baudrate = baudrate)
 
    ## create embedded web server for static files
