@@ -1,1 +1,1 @@
-python serial2ws.py -s ws://localhost:8081 -p /dev/ttyACM0 -b 9600
+python serial2ws.py -s ws://localhost:8081 -p /dev/ttyUSB0 -b 9600

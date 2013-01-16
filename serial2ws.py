@@ -66,16 +66,6 @@ class McuProtocol(LineReceiver):
          print "DEBUG Read from transmitter"
          self.transport.write('\x00\x46\x4d\x01\x20\x02')
 
-   @exportRpc("control-led")
-   def controlLed(self, status):
-      if status:
-         print "turn on LED"
-         self.transport.write('1')
-      else:
-         print "turn off LED"
-         self.transport.write('0')
-
-
    def connectionMade(self):
       log.msg('Serial port connected.')
 

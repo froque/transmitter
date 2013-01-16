@@ -2,18 +2,6 @@ var sess = null;
 var wsuri = "ws://" + window.location.hostname + ":8081";
 var retryCount = 0;
 var retryDelay = 2;
-var analog0 = null;
-
-// Callback used in PubSub
-function onAnalogValue(topicUri, event) {
-   switch (event.id) {
-      case 0:
-         analog0.innerHTML = event.value;
-         break;
-      default:
-         break;
-   }
-}
 
 // Callback used in PubSub for updating Transmitter Status
 function TransmitterStatus(topicUri, event) {
@@ -33,12 +21,6 @@ function TransmitterStatus(topicUri, event) {
     PowerLimit.innerHTML = event.PowerLimit
 }
 
-// calls McuProtocol.controlLed in file serial2ws.py trough RPC
-function controlLed(status) {
-   sess.call("rpc:control-led", status);
-//.always(ab.log);
-}
-
 function readTX() {
    sess.call("rpc:read-tx");
 }
@@ -51,7 +33,6 @@ function connect() {
          statusline.innerHTML = "Connected to " + wsuri;
          retryCount = 0;
          sess.prefix("event", "http://example.com/mcu#");         // Prefix for CURIE
-         sess.subscribe("event:analog-value", onAnalogValue);
          sess.subscribe("event:tx-status", TransmitterStatus);
          sess.prefix("rpc", "http://example.com/mcu-control#");   // Prefix for CURIE
       },
@@ -66,6 +47,5 @@ function connect() {
 }
 
 window.onload = function (){
-   analog0 = document.getElementById('analog0');
    connect();
 };
