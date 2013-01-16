@@ -17,7 +17,7 @@
 ###############################################################################
 
 
-import sys, time
+import sys, time, re
 
 if sys.platform == 'win32':
    ## on windows, we need to use the following reactor for serial support
@@ -53,15 +53,19 @@ class Serial2WsOptions(usage.Options):
 ## knows nothing about websockets
 ##
 class McuProtocol(LineReceiver):
-
+   delimiter = '$'
    ## need a reference to our WS-MCU gateway factory to dispatch PubSub events
    ##
    def __init__(self, wsMcuFactory):
       self.wsMcuFactory = wsMcuFactory
 
-
    ## this method is exported as RPC and can be called by connected clients
    ##
+   @exportRpc("read-tx")
+   def readTX(self):
+         print "DEBUG Read from transmitter"
+         self.transport.write('\x00\x46\x4d\x01\x20\x02')
+
    @exportRpc("control-led")
    def controlLed(self, status):
       if status:
@@ -75,26 +79,31 @@ class McuProtocol(LineReceiver):
    def connectionMade(self):
       log.msg('Serial port connected.')
 
-
    def lineReceived(self, line):
+      print "DEBUG line", line
       try:
-         ## parse data received from MCU
-         ##
-         data = [int(x) for x in line.split()]
-         print line, data
-
-         ## construct PubSub event from raw data
-         ##
-         evt = {'id': data[0], 'value': data[1]}
-
-         ## publish event to all clients subscribed to topic
-         ##
-         self.wsMcuFactory.dispatch("http://example.com/mcu#analog-value", evt)
-
-#         log.msg("Analog value: %s" % str(evt));
-      except ValueError:
-         log.err('Unable to parse value %s' % line)
-
+            AlarmCode = int(re.search('AlarmCode=(.+?),', line).group(1))
+            Pfwd = float(re.search('Pfwd=(.+?)W,', line).group(1))
+            ref = float(re.search('ref=(.+?)W,', line).group(1))
+            Texc = float(re.search('Texc=(.+?)C,', line).group(1))
+            Tamp = float(re.search('Tamp=(.+?)C,', line).group(1))
+            Uexc = float(re.search('Uexc=(.+?)V,', line).group(1))
+            Uamp = float(re.search('Uamp=(.+?)V,', line).group(1))
+            Audio = ord(re.search('Audio=(.+?),', line).group(1))
+            Iexc = float(re.search('Iexc=(.+?)A,', line).group(1))
+            Iamp = float(re.search('Iamp=(.+?)A,', line).group(1))
+            Uptime = re.search('Uptime=(.+?),', line).group(1)
+            Freq = float(re.search('Freq=(.+?)MHz,', line).group(1))
+            Firmware = re.search('Firmware=(.+?),', line).group(1)
+            PowerLimit = re.search('PowerLimit=(.+?),', line).group(1)
+            evt = {'AlarmCode': AlarmCode, 'Pfwd': Pfwd, 'ref': ref,\
+                 'Texc': Texc, 'Tamp': Tamp, 'Uexc': Uexc, 'Uamp': Uamp,\
+                 'Audio': Audio, 'Iexc': Iexc, 'Iamp': Iamp, 'Uptime': Uptime,\
+                 'Freq': Freq, 'Firmware': Firmware, 'PowerLimit': PowerLimit}
+            self.wsMcuFactory.dispatch("http://example.com/mcu#tx-status", evt)
+            print evt
+      except AttributeError:
+            print "Could not parse string."
 
 ## WS-MCU protocol
 ## knows about websockets

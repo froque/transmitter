@@ -10,11 +10,25 @@
 
       <h2>Control LED</h2>
       <button onclick="controlLed(false)">LED Off</button>
-      <button onclick="controlLed(true)">LED On</button>
+      <button onclick="readTX()">Read Tx</button>
 
       <h2>Analog Values</h2>
       <p>Analog 0 : <span id="analog0">-</span></p>
 
+      <p>Alarm Code : <span id="AlarmCode">-</span></p>
+      <p>Output Power (W): <span id="Pfwd">-</span></p>
+      <p>Reflected Power (W): <span id="ref">-</span></p>
+      <p>Exciter Temperature (C): <span id="Texc">-</span></p>
+      <p>Amplifier Temperature (C): <span id="Tamp">-</span></p>
+      <p>Exciter Voltage (V): <span id="Uexc">-</span></p>
+      <p>Amplifier Voltage (V): <span id="Uamp">-</span></p>
+      <p>Audio: <span id="audio">-</span></p>
+      <p>Exciter Current (A): <span id="Iexc">-</span></p>
+      <p>Amplifier Current (A): <span id="Iamp">-</span></p>
+      <p>Uptime: <span id="Uptime">-</span></p>
+      <p>Frequency (MHz): <span id="Freq">-</span></p>
+      <p>Firmware: <span id="Firmware">-</span></p>
+      <p>Power Limit: <span id="PowerLimit">-</span></p>
       <h2>Status</h2>
       <div id="statusline"></div>
    </body>
