@@ -1,31 +1,589 @@
- <html>
-   <head>
-      <title>Autobahn Serial2Ws</title>
-      <script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Autobahn Serial2Ws</title>
+    <script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
 <!--      <script src="autobahn.js"></script>-->
-      <script src="serial2ws.js"></script>
-   </head>
-   <body>
-      <h2>Update Status</h2>
-      <input type="checkbox" id="autoread" onclick="autoReadTx()">Auto Read Tx<br>
-      <button id="readTx" onclick="readTX()">Read Tx</button>
-
-      <h2>Transmitter Status</h2>
-      <p>Alarm Code : <span id="AlarmCode">-</span></p>
-      <p>Output Power (W): <span id="Pfwd">-</span></p>
-      <p>Reflected Power (W): <span id="ref">-</span></p>
-      <p>Exciter Temperature (C): <span id="Texc">-</span></p>
-      <p>Amplifier Temperature (C): <span id="Tamp">-</span></p>
-      <p>Exciter Voltage (V): <span id="Uexc">-</span></p>
-      <p>Amplifier Voltage (V): <span id="Uamp">-</span></p>
-      <p>Audio: <span id="audio">-</span></p>
-      <p>Exciter Current (A): <span id="Iexc">-</span></p>
-      <p>Amplifier Current (A): <span id="Iamp">-</span></p>
-      <p>Uptime: <span id="Uptime">-</span></p>
-      <p>Frequency (MHz): <span id="Freq">-</span></p>
-      <p>Firmware: <span id="Firmware">-</span></p>
-      <p>Power Limit: <span id="PowerLimit">-</span></p>
-      <h2>Status</h2>
-      <div id="statusline"></div>
-   </body>
- </html>
+    <script src="serial2ws.js"></script>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td>
+          <h2>Transmitter Settings</h2>
+<!--            <form onsubmit="setSettings()" action="#">-->
+          <form>
+            <fieldset id="power_fs">
+              <legend>Output Power</legend>
+<!--              <input type="range" id="power" min="0" max="100" value="0">-->
+                <input type="number" id="power" min="0" max="100" value="0" step="1">
+              %
+            </fieldset>
+            <fieldset id="freq_fs">
+              <legend>Frequency</legend>
+              <input type="number" id="freq" min="87.5" max="108.0" value="100.0" step="0.5">
+              MHz
+            </fieldset>
+            <fieldset id="channels_fs">
+              <legend>Stereo/Mono</legend>
+              <table>
+                <tr>
+                  <td>
+                    <input type="radio" id="stereo" name="channels" value="stereo" checked />Stereo
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type="radio" id="mono" name="channels" value="mono" />Mono
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+            <fieldset id="DSP_fs">
+              <legend>Audio Compressor Settings</legend>
+              <table>
+                <tr>
+                  <td>
+                    Attack
+                  </td>
+                  <td>
+                    <select id="attack" name="attack">
+                      <option selected="selected" value="0">1,7</option>
+                      <option value="1">3,5</option>
+                      <option value="2">6,7</option>
+                      <option value="3">13</option>
+                      <option value="4">26</option>
+                      <option value="5">53</option>
+                      <option value="6">106</option>
+                      <option value="7">212</option>
+                    </select>
+                  </td>
+                  <td>
+                    ms
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Decay
+                  </td>
+                  <td>
+                    <select id="decay" name="decay">
+                      <option value="0">1,7</option>
+                      <option value="1">3,5</option>
+                      <option value="2">6,7</option>
+                      <option value="3">13</option>
+                      <option value="4">26</option>
+                      <option selected="selected" value="5">53</option>
+                      <option value="6">106</option>
+                      <option value="7">212</option>
+                      <option value="8">425</option>
+                      <option value="9">850</option>
+                      <option value="10">1700</option>
+                    </select>
+                  </td>
+                  <td>
+                    ms
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Interval
+                  </td>
+                  <td>
+                    <select id="interval" name="interval">
+                      <option value="0">1,7</option>
+                      <option value="1">3,5</option>
+                      <option value="2">6,7</option>
+                      <option selected="selected" value="3">13</option>
+                      <option value="4">26</option>
+                      <option value="5">53</option>
+                      <option value="6">106</option>
+                    </select>
+                  </td>
+                  <td>
+                    ms
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Threshold
+                  </td>
+                  <td>
+                    <select id="threshold" name="threshold">
+                      <option value="0">0,0</option>
+                      <option value="1">-1,5</option>
+                      <option value="2">-3,0</option>
+                      <option value="3">-4,5</option>
+                      <option value="4">-6,0</option>
+                      <option value="5">-7,5</option>
+                      <option value="6">-9,0</option>
+                      <option value="7">-10,5</option>
+                      <option value="8">-12,0</option>
+                      <option value="9">-13,5</option>
+                      <option value="10">-15,0</option>
+                      <option value="11">-16,5</option>
+                      <option value="12">-18,0</option>
+                      <option value="13">-19,5</option>
+                      <option value="14">-21,0</option>
+                      <option value="15">-22,5</option>
+                      <option value="16">-24,0</option>
+                      <option value="17">-25,5</option>
+                      <option value="18">-27,0</option>
+                      <option value="19">-28,5</option>
+                      <option value="20">-30,0</option>
+                    </select>
+                  </td>
+                  <td>
+                    dB
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Compression
+                  </td>
+                  <td>
+                    <select id="compression" name="compression">
+                      <option value="0">1:1.00</option>
+                      <option value="1">1:1.07</option>
+                      <option value="2">1:1.14</option>
+                      <option value="3">1:1.23</option>
+                      <option value="4">1:1.33</option>
+                      <option value="5">1:1.45</option>
+                      <option value="6">1:1.60</option>
+                      <option value="7">1:1.78</option>
+                      <option selected="selected" value="8">1:2.00</option>
+                      <option value="9">1:2.29</option>
+                      <option value="10">1:2.67</option>
+                      <option value="11">1:3.20</option>
+                      <option value="12">1:4.00</option>
+                    </select>
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+            <fieldset id="alarm_fs">
+              <legend>Alarm Levels</legend>
+              <table>
+                <tr>
+                  <td>
+                    SWR Alarm
+                  </td>
+                  <td>
+                    <select id="swr_alarm" name="swr_alarm">
+                      <option value="0">>1/>10</option>
+                      <option value="1">>2/>20</option>
+                      <option value="2">>3/>30</option>
+                      <option value="3">>4/>40</option>
+                      <option value="4">>5/>50</option>
+                      <option value="5">>6/>60</option>
+                      <option selected="selected" value="6">>7/>70</option>
+                      <option value="7">>8/>80</option>
+                      <option value="8">>9/>90</option>
+                      <option value="9">>9.9/>99</option>
+                    </select>
+                  </td>
+                  <td>
+                    W/W
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Current Alarm
+                  </td>
+                  <td>
+                    <select id="current_alarm" name="current_alarm">
+                      <option selected="selected" value="0">>2.0</option>
+                      <option value="1">>3.0</option>
+                      <option value="2">>4.0</option>
+                      <option value="3">>5.0</option>
+                      <option value="4">>6.0</option>
+                      <option value="5">>7.0</option>
+                      <option value="6">>8.0</option>
+                      <option value="7">>9.0</option>
+                      <option value="8">>10.0</option>
+                      <option value="9">>11.0</option>
+                      <option value="10">>12.0</option>
+                      <option value="11">>13.0</option>
+                      <option value="12">>14.0</option>
+                      <option value="13">>15.0</option>
+                      <option value="14">>16.0</option>
+                      <option value="15">>17.0</option>
+                      <option value="16">>18.0</option>
+                      <option value="17">>19.0</option>
+                      <option value="18">>20.0</option>
+                      <option value="19">>21.0</option>
+                      <option value="20">>22.0</option>
+                      <option value="21">>23.0</option>
+                      <option value="22">>24.0</option>
+                      <option value="23">>25.0</option>
+                      <option value="24">>26.0</option>
+                      <option value="25">>27.0</option>
+                      <option value="26">>28.0</option>
+                      <option value="27">>29.0</option>
+                      <option value="28">>30.0</option>
+                    </select>
+                  </td>
+                  <td>
+                    A
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Temperature Alarm
+                  </td>
+                  <td>
+                    <select id="temp_alarm" name="temp_alarm">
+                      <option value="0">40</option>
+                      <option value="1">50</option>
+                      <option value="2">60</option>
+                      <option value="3">65</option>
+                      <option selected="selected" value="4">70</option>
+                      <option value="5">75</option>
+                      <option value="6">80</option>
+                      <option value="7">90</option>
+                    </select>
+                  </td>
+                  <td>
+                    &deg;C
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Amplifier Voltage Alarm
+                  </td>
+                  <td>
+                    <select id="Uamp_alarm" name="Uamp_alarm">
+                      <option value="0">240</option>
+                      <option value="1">260</option>
+                      <option value="2">280</option>
+                      <option value="3">300</option>
+                      <option value="4">320</option>
+                      <option value="5">340</option>
+                      <option selected="selected" value="6">360</option>
+                      <option value="7">380</option>
+                      <option value="8">400</option>
+                      <option value="9">410</option>
+                      <option value="10">420</option>
+                      <option value="11">430</option>
+                      <option value="12">440</option>
+                      <option value="13">450</option>
+                      <option value="14">460</option>
+                      <option value="15">470</option>
+                      <option value="16">480</option>
+                      <option value="17">490</option>
+                      <option value="18">500</option>
+                      <option value="19">510</option>
+                      <option value="20">520</option>
+                      <option value="21">530</option>
+                      <option value="22">540</option>
+                      <option value="23">550</option>
+                    </select>
+                  </td>
+                  <td>
+                    V
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+            <fieldset id="bass_treble_fs">
+              <legend>Bass and Treble</legend>
+              <table>
+                <tr>
+                  <td>
+                    Treble
+                  </td>
+                  <td>
+                    <select id="treble" name="treble">
+                      <option value="0">-8.0</option>
+                      <option value="1">-7.0</option>
+                      <option value="2">-6.0</option>
+                      <option value="3">-5.0</option>
+                      <option value="4">-4.0</option>
+                      <option value="5">-3.0</option>
+                      <option value="6">-2.0</option>
+                      <option value="7">-1.0</option>
+                      <option selected="selected" value="8">0.0</option>
+                      <option value="9">+1.0</option>
+                      <option value="10">+2.0</option>
+                      <option value="11">+3.0</option>
+                      <option value="12">+4.0</option>
+                      <option value="13">+5.0</option>
+                      <option value="14">+6.0</option>
+                      <option value="15">+7.0</option>
+                      <option value="16">+8.0</option>
+                    </select>
+                  </td>
+                  <td>
+                    dB
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Bass
+                  </td>
+                  <td>
+                    <select id="bass" name="bass">
+                      <option value="0">-8.0</option>
+                      <option value="1">-7.0</option>
+                      <option value="2">-6.0</option>
+                      <option value="3">-5.0</option>
+                      <option value="4">-4.0</option>
+                      <option value="5">-3.0</option>
+                      <option value="6">-2.0</option>
+                      <option value="7">-1.0</option>
+                      <option selected="selected" value="8">0.0</option>
+                      <option value="9">+1.0</option>
+                      <option value="10">+2.0</option>
+                      <option value="11">+3.0</option>
+                      <option value="12">+4.0</option>
+                      <option value="13">+5.0</option>
+                      <option value="14">+6.0</option>
+                      <option value="15">+7.0</option>
+                      <option value="16">+8.0</option>
+                    </select>
+                  </td>
+                  <td>
+                    dB
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+            <fieldset id="audio_fs">
+              <legend>Audio Input Level</legend>
+              <table>
+                <tr>
+                  <td>
+                    Left Gain
+                  </td>
+                  <td>
+                    <select id="left_gain" name="left_gain">
+                      <option value="0">-6.0</option>
+                      <option value="1">-5.5</option>
+                      <option value="2">-5.0</option>
+                      <option value="3">-4.5</option>
+                      <option value="4">-4.0</option>
+                      <option value="5">-3.5</option>
+                      <option value="6">-3.0</option>
+                      <option value="7">-2.5</option>
+                      <option value="8">-2.0</option>
+                      <option value="9">-1.5</option>
+                      <option value="10">-1.0</option>
+                      <option value="11">-0.5</option>
+                      <option selected="selected" value="12">0.0</option>
+                      <option value="13">+0.5</option>
+                      <option value="14">+1.0</option>
+                      <option value="15">+1.5</option>
+                      <option value="16">+2.0</option>
+                      <option value="17">+2.5</option>
+                      <option value="18">+3.0</option>
+                      <option value="19">+3.5</option>
+                      <option value="20">+4.0</option>
+                      <option value="21">+4.5</option>
+                      <option value="22">+5.0</option>
+                      <option value="23">+5.5</option>
+                      <option value="24">+6.0</option>
+                      <option value="25">+8.0</option>
+                    </select>
+                  </td>
+                  <td>
+                    dB
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Right Gain
+                  </td>
+                  <td>
+                    <select id="right_gain" name="right_gain">
+                      <option value="0">-6.0</option>
+                      <option value="1">-5.5</option>
+                      <option value="2">-5.0</option>
+                      <option value="3">-4.5</option>
+                      <option value="4">-4.0</option>
+                      <option value="5">-3.5</option>
+                      <option value="6">-3.0</option>
+                      <option value="7">-2.5</option>
+                      <option value="8">-2.0</option>
+                      <option value="9">-1.5</option>
+                      <option value="10">-1.0</option>
+                      <option value="11">-0.5</option>
+                      <option selected="selected" value="12">0.0</option>
+                      <option value="13">+0.5</option>
+                      <option value="14">+1.0</option>
+                      <option value="15">+1.5</option>
+                      <option value="16">+2.0</option>
+                      <option value="17">+2.5</option>
+                      <option value="18">+3.0</option>
+                      <option value="19">+3.5</option>
+                      <option value="20">+4.0</option>
+                      <option value="21">+4.5</option>
+                      <option value="22">+5.0</option>
+                      <option value="23">+5.5</option>
+                      <option value="24">+6.0</option>
+                      <option value="25">+8.0</option>
+                    </select>
+                  </td>
+                  <td>
+                    dB
+                  </td>
+                </tr>
+              </table>
+            </fieldset>
+<!--            <input type="submit">-->
+          </form>
+          <button id="submit" onclick="setSettings()">Submit</button>
+        </td>
+        <td>
+          <h2>Transmitter Status</h2>
+          <table>
+            <tr>
+              <td>
+                Alarm Code
+              </td>
+              <td>
+                <span id="AlarmCode">-</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Output Power
+              </td>
+              <td>
+                <span id="Pfwd">-</span>
+              </td>
+              <td>
+                W
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Reflected Power
+              </td>
+              <td>
+                <span id="ref">-</span>
+              </td>
+              <td>
+                W
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Exciter Temperature
+              </td>
+              <td>
+                <span id="Texc">-</span>
+              </td>
+              <td>
+                &deg;C
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Amplifier Temperature
+              </td>
+              <td>
+                <span id="Tamp">-</span>
+              </td>
+              <td>
+                &deg;C
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Exciter Voltage
+              </td>
+              <td>
+                <span id="Uexc">-</span>
+              </td>
+              <td>
+                V
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Amplifier Voltage
+              </td>
+              <td>
+                <span id="Uamp">-</span>
+              </td>
+              <td>
+                V
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Audio
+              </td>
+              <td>
+                <span id="audio">-</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Exciter Current
+              </td>
+              <td>
+                <span id="Iexc">-</span>
+              </td>
+              <td>
+                A
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Amplifier Current
+              </td>
+              <td>
+                <span id="Iamp">-</span>
+              </td>
+              <td>
+                A
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Uptime
+              </td>
+              <td>
+                <span id="Uptime">-</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Frequency
+              </td>
+              <td>
+                <span id="Freq">-</span>
+              </td>
+              <td>
+                MHz
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Firmware
+              </td>
+              <td>
+                <span id="Firmware">-</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Power Limit
+              </td>
+              <td>
+                <span id="PowerLimit">-</span>
+              </td>
+            </tr>
+          </table>
+          <h2>Update Status</h2>
+          <input type="checkbox" id="autoread" onclick="autoReadTx()">Auto Read Tx<br>
+          <button id="readTx" onclick="readTX()">Read Tx</button>
+        </td>
+      </tr>
+    </table>
+    <h2>Status</h2>
+    <div id="statusline"></div>
+  </body>
+</html>

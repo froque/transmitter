@@ -1,0 +1,5 @@
+ * secure connection: ssl, etc
+ * all RDS stuff
+ * don't use autobahn.min.js from amazonaws
+ * same port for websocket and html
+ * handle alarms better
