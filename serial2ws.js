@@ -4,6 +4,14 @@ var retryCount = 0;
 var retryDelay = 2;
 var winterval;
 
+function cb_f(att_cb,att_fs){
+  if(att_cb.checked){
+    att_fs.disabled = false;
+  } else {
+    att_fs.disabled = true;
+  }
+}
+
 // Callback used in PubSub for updating Transmitter Status
 function TransmitterStatus(topicUri, event) {
     AlarmCode.innerHTML = event.AlarmCode;
@@ -38,7 +46,11 @@ function autoReadTx() {
 
 function setSettings() {
 
-//  channels
+  if (stereo.checked) {
+    channels = stereo.value;
+  } else {
+    channels = mono.value;
+  }
   attack_v = attack.options[attack.selectedIndex].value;
   decay_v = decay.options[decay.selectedIndex].value;
   interval_v = interval.options[interval.selectedIndex].value;
@@ -53,9 +65,29 @@ function setSettings() {
   left_gain_v = left_gain.options[left_gain.selectedIndex].value;
   right_gain_v = right_gain.options[right_gain.selectedIndex].value;
 
-  sess.call("rpc:set-settings",power.value,attack_v,decay_v,interval_v,
-            threshold_v,compression_v,swr_alarm_v,current_alarm_v,temp_alarm_v,
-            Uamp_alarm_v,treble_v,bass_v,left_gain_v,right_gain_v);
+  if(power_cb.checked){
+    sess.call("rpc:set-power",power.value);
+  }
+  if(freq_cb.checked){
+    sess.call("rpc:set-freq",freq.value);
+  }
+  if(channels_cb.checked){
+    sess.call("rpc:set-channels",channels);
+  }
+  if(DSP_cb.checked){
+    sess.call("rpc:set-DSP",attack_v,decay_v,interval_v,
+              threshold_v,compression_v);
+  }
+  if(alarm_cb.checked){
+    sess.call("rpc:set-alarms",swr_alarm_v,current_alarm_v,temp_alarm_v,
+            Uamp_alarm_v);
+  }
+  if(bass_treble_cb.checked){
+    sess.call("rpc:set-bass-treble",treble_v,bass_v);
+  }
+  if(audio_cb.checked){
+    sess.call("rpc:set-audio",left_gain_v,right_gain_v);
+  }
 }
 
 function connect() {

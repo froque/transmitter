@@ -70,22 +70,40 @@ class McuProtocol(LineReceiver):
 #        self.transport.write('\x00\x46\x4d\x01\x20\x02')
         self.transport.write('\x00' + "FM" + '\x01' + '\x20' + '\x02')
 
-    @exportRpc("set-settings")
-    def setSettings(self, power, attack, decay, interval, threshold,
-                 compression, swr_alarm, current_alarm, temp_alarm,
-                 Uamp_alarm, treble, bass, left_gain, right_gain):
-        print power, attack, decay, interval, threshold, compression,\
-           swr_alarm, current_alarm, temp_alarm, Uamp_alarm, treble, bass,\
-           left_gain, right_gain
-
+    @exportRpc("set-power")
     def setPower(self, power):
-        self.transport.write('\x00' + "FO" + '\x01' +
-                       str(int(round(int(power) / 100.0 * 34) + 4)) + '\x02')
-#   def setChannels(self, channels):
-#      self.transport.write('\x00' + "FS" + '\x01' + channels + '\x02')
+        if 0 < float(power) < 100.0:
+            print "DEBUG", power
+#           self.transport.write('\x00' + "FO" + '\x01' +
+#                       str(int(round(int(power) / 100.0 * 34) + 4)) + '\x02')
 
-#   def setFrequency(self, freq):
-#      self.transport.write('\x00' + "FO" + '\x01' + freq + '\x02')
+    @exportRpc("set-freq")
+    def setFrequency(self, freq):
+        if 87.5 < float(freq) < 108.0:
+            print "DEBUG", freq
+#           self.transport.write('\x00' + "FO" + '\x01' + freq + '\x02')
+
+    @exportRpc("set-channels")
+    def setChannels(self, channels):
+        if 0 <= int(channels) <= 1:
+            print "DEBUG", channels
+#           self.transport.write('\x00' + "FS" + '\x01' + channels + '\x02')
+
+    @exportRpc("set-DSP")
+    def setDSP(self, attack, decay, interval, threshold, compression):
+        print "DEBUG", attack, decay, interval, threshold, compression
+
+    @exportRpc("set-alarms")
+    def setAlarms(self, swr_alarm, current_alarm, temp_alarm, Uamp_alarm):
+        print "DEBUG", swr_alarm, current_alarm, temp_alarm, Uamp_alarm
+
+    @exportRpc("set-bass-treble")
+    def setBassTreble(self, treble, bass):
+        print "DEBUG", treble, bass
+
+    @exportRpc("set-audio")
+    def setAudio(self, left_gain, right_gain):
+        print "DEBUG", left_gain, right_gain
 
     def setTreble(self, treble):
         self.transport.write('\x00' + "FDT" + '\x01' +

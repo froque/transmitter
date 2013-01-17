@@ -14,34 +14,46 @@
           <h2>Transmitter Settings</h2>
 <!--            <form onsubmit="setSettings()" action="#">-->
           <form>
-            <fieldset id="power_fs">
-              <legend>Output Power</legend>
+            <fieldset id="power_fs" disabled>
+              <legend>
+                <input type="checkbox" id="power_cb" onclick="cb_f(power_cb,power_fs)">
+                Output Power
+              </legend>
 <!--              <input type="range" id="power" min="0" max="100" value="0">-->
                 <input type="number" id="power" min="0" max="100" value="0" step="1">
               %
             </fieldset>
-            <fieldset id="freq_fs">
-              <legend>Frequency</legend>
-              <input type="number" id="freq" min="87.5" max="108.0" value="100.0" step="0.5">
+            <fieldset id="freq_fs" disabled>
+              <legend>
+                <input type="checkbox" id="freq_cb" onclick="cb_f(freq_cb,freq_fs)">
+                Frequency
+              </legend>
+              <input type="number" id="freq" min="87.5" max="108.0" value="100.0" step="0.1">
               MHz
             </fieldset>
-            <fieldset id="channels_fs">
-              <legend>Stereo/Mono</legend>
+            <fieldset id="channels_fs" disabled>
+              <legend>
+                <input type="checkbox" id="channels_cb" onclick="cb_f(channels_cb,channels_fs)">
+                Stereo/Mono
+              </legend>
               <table>
                 <tr>
                   <td>
-                    <input type="radio" id="stereo" name="channels" value="stereo" checked />Stereo
+                    <input type="radio" id="stereo" name="channels" value="1" checked >Stereo
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <input type="radio" id="mono" name="channels" value="mono" />Mono
+                    <input type="radio" id="mono" name="channels" value="0" >Mono
                   </td>
                 </tr>
               </table>
             </fieldset>
-            <fieldset id="DSP_fs">
-              <legend>Audio Compressor Settings</legend>
+            <fieldset id="DSP_fs" disabled>
+              <legend>
+                <input type="checkbox" id="DSP_cb" onclick="cb_f(DSP_cb,DSP_fs)">
+                Audio Compressor Settings
+                </legend>
               <table>
                 <tr>
                   <td>
@@ -162,8 +174,11 @@
                 </tr>
               </table>
             </fieldset>
-            <fieldset id="alarm_fs">
-              <legend>Alarm Levels</legend>
+            <fieldset id="alarm_fs" disabled>
+              <legend>
+                <input type="checkbox" id="alarm_cb" onclick="cb_f(alarm_cb,alarm_fs)">
+                Alarm Levels
+              </legend>
               <table>
                 <tr>
                   <td>
@@ -286,8 +301,11 @@
                 </tr>
               </table>
             </fieldset>
-            <fieldset id="bass_treble_fs">
-              <legend>Bass and Treble</legend>
+            <fieldset id="bass_treble_fs" disabled>
+              <legend>
+                <input type="checkbox" id="bass_treble_cb" onclick="cb_f(bass_treble_cb,bass_treble_fs)">
+                Bass and Treble
+              </legend>
               <table>
                 <tr>
                   <td>
@@ -349,8 +367,11 @@
                 </tr>
               </table>
             </fieldset>
-            <fieldset id="audio_fs">
-              <legend>Audio Input Level</legend>
+            <fieldset id="audio_fs" disabled>
+              <legend>
+                <input type="checkbox" id="audio_cb" onclick="cb_f(audio_cb,audio_fs)">
+                Audio Input Level
+              </legend>
               <table>
                 <tr>
                   <td>
