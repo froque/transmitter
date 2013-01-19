@@ -16,7 +16,6 @@
 ##
 ###############################################################################
 
-
 import sys
 import re
 
@@ -43,7 +42,7 @@ from autobahn.wamp import WampServerFactory, WampServerProtocol, exportRpc
 
 class Serial2WsOptions(usage.Options):
     optParameters = [
-      ['baudrate', 'b', 19200, 'Serial baudrate'],
+      ['baudrate', 'b', 9600, 'Serial baudrate'],
       ['port', 'p', '/dev/ttyUSB0', 'Serial port to use'],
       ['webport', 'w', 8080, 'Web port to use for embedded Web server'],
       ['wsurl', 's', "ws://localhost:9000",\
@@ -66,16 +65,13 @@ class McuProtocol(LineReceiver):
     ##
     @exportRpc("read-tx")
     def readTX(self):
-        print "DEBUG Read from transmitter"
-#        self.transport.write('\x00\x46\x4d\x01\x20\x02')
-        self.transport.write('\x00' + "FM" + '\x01' + '\x20' + '\x02')
+        self.writeTransmitter("FM", '\x20')
 
     @exportRpc("set-power")
     def setPower(self, power):
         if 0 <= float(power) <= 100.0:
-            power_s = str(int(round(int(power) / 100.0 * 34) + 4))
-            print "DEBUG", "power", power, power_s
-#            self.transport.write('\x00' + "FO" + '\x01' + power_s + '\x02')
+            power_s = chr(int(round(int(power) / 100.0 * 34) + 4))
+            self.writeTransmitter("FO", power_s)
 
     @exportRpc("set-freq")
     def setFrequency(self, freq):
@@ -86,86 +82,86 @@ class McuProtocol(LineReceiver):
             low = chr((int(freq / 5) - int(int(freq / 5) / 128) * 128) + 4)
             #high part of freq
             high = chr((int(int(freq / 5) / 128)) + 4)
-            print "DEBUG", "freq", ord(low), ord(high), hex(ord(low)), hex(ord(high))
-            self.transport.write('\x00' + "FF" + '\x01' + low + high + '\x02')
+            self.writeTransmitter("FF", low + high)
 
     @exportRpc("set-channels")
     def setChannels(self, channels):
         if 0 <= int(channels) <= 1:
-            print "DEBUG", "channels", channels
             # convert from int to ASCII
             channels = str(channels)
-            self.transport.write('\x00' + "FS" + '\x01' + channels + '\x02')
+            self.writeTransmitter("FS", channels)
 
     @exportRpc("set-DSP")
     def setDSP(self, attack, decay, interval, threshold, compression):
-        print "DEBUG", "DSP", attack, decay, interval, threshold, compression
+        self.setAttack(attack)
+        self.setDecay(decay)
+        self.setIntegration(interval)
+        self.setThreshold(threshold)
+        self.setCompression(compression)
 
     @exportRpc("set-alarms")
     def setAlarms(self, swr_alarm, current_alarm, temp_alarm, Uamp_alarm):
-        print "DEBUG", "alarms", swr_alarm, current_alarm, temp_alarm, Uamp_alarm
+        self.setTempAlarm(temp_alarm)
+        self.setSWRAlarm(swr_alarm)
+        self.setUampAlarm(Uamp_alarm)
+        self.setIampAlarm(current_alarm)
 
     @exportRpc("set-bass-treble")
     def setBassTreble(self, treble, bass):
-        print "DEBUG", "bass/treble", treble, bass
+        self.setTreble(treble)
+        self.setBass(bass)
 
     @exportRpc("set-audio")
     def setAudio(self, left_gain, right_gain):
-        print "DEBUG", "audio", left_gain, right_gain
+        self.setRightGain(right_gain)
+        self.setLeftGain(left_gain)
 
     def setTreble(self, treble):
-        self.transport.write('\x00' + "FDT" + '\x01' +
-                                            str(int(treble) + 4) + '\x02')
+        self.writeTransmitter("FDT", chr(int(treble) + 4))
 
     def setBass(self, bass):
-        self.transport.write('\x00' + "FDB" + '\x01' +
-                                            str(int(bass) + 4) + '\x02')
+        self.writeTransmitter("FDB", chr(int(bass) + 4))
 
     def setAttack(self, attack):
-        self.transport.write('\x00' + "FDA" + '\x01' +
-                                            str(int(attack) + 4) + '\x02')
+        self.writeTransmitter("FDA", chr(int(attack) + 4))
 
     def setDecay(self, decay):
-        self.transport.write('\x00' + "FDD" + '\x01' +
-                                            str(int(decay) + 4) + '\x02')
+        self.writeTransmitter("FDD", chr(int(decay) + 4))
 
     def setThreshold(self, threshold):
-        self.transport.write('\x00' + "FDH" + '\x01' +
-                                            str(int(threshold) + 4) + '\x02')
+        self.writeTransmitter("FDH", chr(int(threshold) + 4))
+
+    def setCompression(self, compression):
+        self.writeTransmitter("FDC", chr(int(compression) + 4))
 
     def setIntegration(self, integration):
-        self.transport.write('\x00' + "FDI" + '\x01' +
-                                            str(int(integration) + 4) + '\x02')
+        self.writeTransmitter("FDI", chr(int(integration) + 4))
 
     def setLeftGain(self, leftGain):
-        self.transport.write('\x00' + "FDGL" + '\x01' +
-                                            str(int(leftGain) + 4) + '\x02')
+        self.writeTransmitter("FDGL", chr(int(leftGain) + 4))
 
     def setRightGain(self, rightGain):
-        self.transport.write('\x00' + "FDGR" + '\x01' +
-                                            str(int(rightGain) + 4) + '\x02')
+        self.writeTransmitter("FDGR", chr(int(rightGain) + 4))
 
     def setTempAlarm(self, tempAlarm):
-        self.transport.write('\x00' + "FAT" + '\x01' +
-                                            str(int(tempAlarm) + 4) + '\x02')
+        self.writeTransmitter("FAT", chr(int(tempAlarm) + 4))
 
     def setSWRAlarm(self, SWRAlarm):
-        self.transport.write('\x00' + "FAS" + '\x01' +
-                                            str(int(SWRAlarm) + 4) + '\x02')
+        self.writeTransmitter("FAS", chr(int(SWRAlarm) + 4))
 
     def setUampAlarm(self, UampAlarm):
-        self.transport.write('\x00' + "FAU" + '\x01' +
-                                              str(int(UampAlarm) + 4) + '\x02')
+        self.writeTransmitter("FAU", chr(int(UampAlarm) + 4))
 
     def setIampAlarm(self, IampAlarm):
-        self.transport.write('\x00' + "FAC" + '\x01' +
-                                            str(int(IampAlarm) + 4) + '\x02')
+        self.writeTransmitter("FAC", chr(int(IampAlarm) + 4))
+
+    def writeTransmitter(self, command, data):
+        self.transport.write('\x00\x00' + command + '\x01' + data + '\x02')
 
     def connectionMade(self):
         log.msg('Serial port connected.')
 
     def lineReceived(self, line):
-        print "DEBUG line", line
         try:
             AlarmCode = int(re.search('AlarmCode=(.+?),', line).group(1))
             Pfwd = float(re.search('Pfwd=(.+?)W,', line).group(1))
@@ -186,7 +182,6 @@ class McuProtocol(LineReceiver):
                 'Audio': Audio, 'Iexc': Iexc, 'Iamp': Iamp, 'Uptime': Uptime,\
                 'Freq': Freq, 'Firmware': Firmware, 'PowerLimit': PowerLimit}
             self.wsMcuFactory.dispatch("http://example.com/mcu#tx-status", evt)
-            print evt
         except AttributeError:
             print "Could not parse string."
 

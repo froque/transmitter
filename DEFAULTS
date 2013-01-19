@@ -1,0 +1,21 @@
+Treble           0 dB
+Bass             0 dB
+Compression      1:2.00 default
+Threshold        -12 dB for 75 microseconds
+Attack           1,7 ms default
+Decay            53  ms default
+Integration      13  ms default
+LCD contrast     Dark
+Right Ch value   +3.0 dB default
+Left  Ch value   +3.0 dB default
+PLL Step         100 KHz default
+Firmware version 5015+ v2.2 01/12
+Current Alarm    Ialarm=22.0 A
+Temp  Alarm      Talarm=70ºC default
+SWR Alarm        Pref >7W/70W default
+U Amp Alarm      Uamplifier = 51V
+Band Select      87,5 - 108 MHz
+RF Amp Control   No amplifier Default
+RF Power Alc     (não dá para ver)
+
+

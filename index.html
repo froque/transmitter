@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Autobahn Serial2Ws</title>
+    <title>FM Transmitter configuration</title>
     <script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
 <!--      <script src="autobahn.js"></script>-->
     <script src="serial2ws.js"></script>
@@ -13,6 +13,7 @@
         <td>
           <h2>Transmitter Settings</h2>
 <!--            <form onsubmit="setSettings()" action="#">-->
+          <button id="submit" onclick="setSettings()">Submit</button>
           <form>
             <fieldset id="power_fs" disabled>
               <legend>
@@ -269,30 +270,30 @@
                   </td>
                   <td>
                     <select id="Uamp_alarm" name="Uamp_alarm">
-                      <option value="0">240</option>
-                      <option value="1">260</option>
-                      <option value="2">280</option>
-                      <option value="3">300</option>
-                      <option value="4">320</option>
-                      <option value="5">340</option>
-                      <option selected="selected" value="6">360</option>
-                      <option value="7">380</option>
-                      <option value="8">400</option>
-                      <option value="9">410</option>
-                      <option value="10">420</option>
-                      <option value="11">430</option>
-                      <option value="12">440</option>
-                      <option value="13">450</option>
-                      <option value="14">460</option>
-                      <option value="15">470</option>
-                      <option value="16">480</option>
-                      <option value="17">490</option>
-                      <option value="18">500</option>
-                      <option value="19">510</option>
-                      <option value="20">520</option>
-                      <option value="21">530</option>
-                      <option value="22">540</option>
-                      <option value="23">550</option>
+                      <option value="0">24</option>
+                      <option value="1">26</option>
+                      <option value="2">28</option>
+                      <option value="3">30</option>
+                      <option value="4">32</option>
+                      <option value="5">34</option>
+                      <option selected="selected" value="6">36</option>
+                      <option value="7">38</option>
+                      <option value="8">40</option>
+                      <option value="9">41</option>
+                      <option value="10">42</option>
+                      <option value="11">43</option>
+                      <option value="12">44</option>
+                      <option value="13">45</option>
+                      <option value="14">46</option>
+                      <option value="15">47</option>
+                      <option value="16">48</option>
+                      <option value="17">49</option>
+                      <option value="18">50</option>
+                      <option value="19">51</option>
+                      <option value="20">52</option>
+                      <option value="21">53</option>
+                      <option value="22">54</option>
+                      <option value="23">55</option>
                     </select>
                   </td>
                   <td>
@@ -453,10 +454,28 @@
             </fieldset>
 <!--            <input type="submit">-->
           </form>
-          <button id="submit" onclick="setSettings()">Submit</button>
         </td>
         <td>
           <h2>Transmitter Status</h2>
+          <div id="statusline"></div>
+          <input type="checkbox" id="autoread" onclick="autoReadTx()">Auto Read Tx
+          <button id="readTx" onclick="readTX()">Read Tx</button>
+          <table border="1">
+            <tr>
+              <td id="ampTemp_id">Amplifier Temperature Alarm</td>
+              <td id="SWR_id">SWR Alarm</td>
+            </tr>
+            <tr>
+              <td id="excTemp_id">Exciter Temperature Alarm</td>
+              <td id="I_id">Current Alarm</td>
+            </tr>
+            <tr>
+              <td id="ampVoltage_id">Voltage Alarm</td>
+              <td id="standby_id">Standby</td>
+            </tr>
+            <br/>
+            <p id="AlarmCode_id"></p>
+          </table>
           <table>
             <tr>
               <td>
@@ -598,13 +617,8 @@
               </td>
             </tr>
           </table>
-          <h2>Update Status</h2>
-          <input type="checkbox" id="autoread" onclick="autoReadTx()">Auto Read Tx<br>
-          <button id="readTx" onclick="readTX()">Read Tx</button>
         </td>
       </tr>
     </table>
-    <h2>Status</h2>
-    <div id="statusline"></div>
   </body>
 </html>

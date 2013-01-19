@@ -4,6 +4,30 @@ var retryCount = 0;
 var retryDelay = 2;
 var winterval;
 
+function changeCell(v,id){
+  if (v > 0){
+    id.style.backgroundColor = "red";
+  } else {
+    id.style.backgroundColor = "white";
+  }
+}
+
+function CheckAlarm(AlarmCode_v){
+ampTemp_v    = 0x01 & AlarmCode_v;
+SWR_v        = 0x02 & AlarmCode_v;
+excTemp_v    = 0x04 & AlarmCode_v;
+I_v          = 0x08 & AlarmCode_v;
+ampVoltage_v = 0x10 & AlarmCode_v;
+standby_v    = 0x20 & AlarmCode_v;
+
+changeCell(ampTemp_v,ampTemp_id);
+changeCell(SWR_v,SWR_id);
+changeCell(excTemp_v,excTemp_id);
+changeCell(I_v,I_id);
+changeCell(ampVoltage_v,ampVoltage_id);
+changeCell(standby_v,standby_id);
+}
+
 function cb_f(att_cb,att_fs){
   if(att_cb.checked){
     att_fs.disabled = false;
@@ -15,6 +39,7 @@ function cb_f(att_cb,att_fs){
 // Callback used in PubSub for updating Transmitter Status
 function TransmitterStatus(topicUri, event) {
     AlarmCode.innerHTML = event.AlarmCode;
+    CheckAlarm(parseInt(event.AlarmCode, 10));
     Pfwd.innerHTML = event.Pfwd;
     ref.innerHTML = event.ref;
     Texc.innerHTML = event.Texc;
@@ -91,7 +116,6 @@ function setSettings() {
 }
 
 function connect() {
-   statusline = document.getElementById('statusline');
    sess = new ab.Session(wsuri,
       // function used after opening session
       function() {
