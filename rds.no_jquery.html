@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>RDS Settings</title>
+    <script type="text/javascript" src="autobahn.min.js"></script>
+    <script type="text/javascript" src="serial2ws.js"></script>
+  </head>
+  <body>
+    <button id="submit" onclick="setRdsSettings()">Submit</button>
+    <div id="statusline"></div>
+    <form>
+      <fieldset id="PI_code_fs" disabled>
+        <legend>
+          <input type="checkbox" id="PI_code_cb" onclick="cb_f(PI_code_cb,PI_code_fs)">
+          PI Code
+        </legend>
+        <label for="country_id">Country</label>
+        <select id="country_id">
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">A</option>
+          <option value="11">B</option>
+          <option value="12">C</option>
+          <option value="13">D</option>
+          <option value="14">E</option>
+          <option value="15">F</option>
+        </select>
+        <label for="country_ecc_id">Country - ECC</label>
+        <select id="country_ecc_id">
+          <option value="0">E0</option>
+          <option value="1">E1</option>
+          <option value="2">E2</option>
+          <option value="3">E3</option>
+          <option value="4">E4</option>
+        </select>
+        <label for="pr_id">Area Coverage</label>
+        <input type="number" id="pr_id" min="0" max="255" value="0" step="1">
+      </fieldset>
+      <fieldset id="A0_settings_fs" disabled>
+        <legend>
+          <input type="checkbox" id="A0_settings_cb" onclick="cb_f(A0_settings_cb,A0_settings_fs)">
+          A0 Settings
+        </legend>
+        <table>
+          <tr>
+            <td>
+              <fieldset>
+                <legend>TP</legend>
+                <input type="radio" name="tp" id="tp1_id" value="1" >1
+                <input type="radio" name="tp" id="tp0_id" value="0" checked >0
+              </fieldset>
+            </td>
+            <td>
+              <fieldset>
+                <legend>TA</legend>
+                <input type="radio" name="ta" id="ta1_id" value="1" >1
+                <input type="radio" name="ta" id="ta0_id" value="0" checked >0
+              </fieldset>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <fieldset>
+                <legend>Music/Speech</legend>
+                <input type="radio" name="ms" id="ms1_id" value="1" checked >1
+                <input type="radio" name="ms" id="ms0_id" value="0" >0
+              </fieldset>
+            </td>
+            <td>
+              <fieldset>
+                <legend>Dynamic PTY</legend>
+                <input type="radio" name="dyn_pty1" id="dyn_pty1_id" value="1" checked >Y
+                <input type="radio" name="dyn_pty1" id="dyn_pty0_id" value="0" >N
+              </fieldset>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <fieldset>
+                <legend>Compression</legend>
+                <input type="radio" name="compression1" id="compression1_id" value="1" checked >Y
+                <input type="radio" name="compression1" id="compression0_id" value="0" >N
+              </fieldset>
+            </td>
+            <td>
+              <fieldset>
+                <legend>Mono/Stereo</legend>
+                <input type="radio" name="channels1" id="channels1_id" value="1" checked >S
+                <input type="radio" name="channels1" id="channels0_id" value="0" >M
+              </fieldset>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <fieldset>
+                <legend>Artificial head</legend>
+                <input type="radio" name="ah" id="ah1_id" value="1" checked >Y
+                <input type="radio" name="ah" id="ah0_id" value="0" >N
+              </fieldset>
+            </td>
+            <td>
+              <label for="program_type_id">Program Type - PTY</label>
+              <select id="program_type_id">
+                <option value="0">Undefined</option>
+                <option value="1">News</option>
+                <option value="2">Affairs</option>
+                <option value="3">Info</option>
+                <option value="4">Sport</option>
+                <option value="5">Educate</option>
+                <option value="6">Drama</option>
+                <option value="7">Culture</option>
+                <option value="8">Science</option>
+                <option value="9">Varied</option>
+                <option value="10">Pop Music</option>
+                <option value="11">Rock Music</option>
+                <option value="12">Easy Music</option>
+                <option value="13">Light Music</option>
+                <option value="14">Classics</option>
+                <option value="15">Other Music</option>
+                <option value="16">Weather</option>
+                <option value="17">Finance</option>
+                <option value="18">Children's program</option>
+                <option value="19">Social Affairs</option>
+                <option value="20">Religion</option>
+                <option value="21">Phone In</option>
+                <option value="22">Travel</option>
+                <option value="23">Leisure</option>
+                <option value="24">Jazz Music</option>
+                <option value="25">Country Music</option>
+                <option value="26">National Music</option>
+                <option value="27">Oldies Music</option>
+                <option value="28">Folk Music</option>
+                <option value="29">Documentary</option>
+                <option value="30">Alarm test</option>
+                <option value="31">Alarm</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+      <fieldset id="PF_alternative_fs"  disabled>
+        <legend>
+          <input type="checkbox" id="PF_alternative_cb" onclick="cb_f(PF_alternative_cb,PF_alternative_fs)">
+          AF - Alternative Frequencies
+        </legend>
+        <input type="checkbox" id="AF1_cb_id" onclick="cb_f(AF1_cb_id,AF1_id)">
+        <label for="AF1_id">AF1</label>
+        <input type="number" id="AF1_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
+        <br>
+        <input type="checkbox" id="AF2_cb_id" onclick="cb_f(AF2_cb_id,AF2_id)">
+        <label for="AF2_id">AF2</label>
+        <input type="number" id="AF2_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
+        <br>
+        <input type="checkbox" id="AF3_cb_id" onclick="cb_f(AF3_cb_id,AF3_id)">
+        <label for="AF3_id">AF3</label>
+        <input type="number" id="AF3_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
+        <br>
+        <input type="checkbox" id="AF4_cb_id" onclick="cb_f(AF4_cb_id,AF4_id)">
+        <label for="AF4_id">AF4</label>
+        <input type="number" id="AF4_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
+        <br>
+        <input type="checkbox" id="AF5_cb_id" onclick="cb_f(AF5_cb_id,AF5_id)">
+        <label for="AF5_id">AF5</label>
+        <input type="number" id="AF5_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
+        <br>
+        <input type="checkbox" id="AF6_cb_id" onclick="cb_f(AF6_cb_id,AF6_id)">
+        <label for="AF6_id">AF6</label>
+        <input type="number" id="AF6_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
+        <br>
+        <input type="checkbox" id="AF7_cb_id" onclick="cb_f(AF7_cb_id,AF7_id)">
+        <label for="AF7_id">AF7</label>
+        <input type="number" id="AF7_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
+        <br>
+      </fieldset>
+      <fieldset id="static_PS_fs" >
+        <legend>
+          <input type="checkbox" id="static_PS_cb" onclick="cb_f(static_PS_cb,static_PS_fs)">
+          Static PS
+        </legend>
+        <input type="text" id="static_PS_id" maxlength="8">
+        <input type="number" id="delay_PS_id" min="0" max="9" value="0" step="1">
+      </fieldset>
+      <fieldset id="dynamic_PS_fs"  disabled>
+        <legend>
+          <input type="checkbox" id="dynamic_PS_cb" onclick="cb_f(dynamic_PS_cb,dynamic_PS_fs)">
+          Dynamic PS
+        </legend>
+        <button id="delay_all_id" onclick="">Set all delays to 0</button>
+        <br>
+        <input type="text" id="dyn_PS1_id" maxlength="8">
+        <input type="number" id="delay_PS1_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS2_id" maxlength="8">
+        <input type="number" id="delay_PS2_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS3_id" maxlength="8">
+        <input type="number" id="delay_PS3_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS4_id" maxlength="8">
+        <input type="number" id="delay_PS4_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS5_id" maxlength="8">
+        <input type="number" id="delay_PS5_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS6_id" maxlength="8">
+        <input type="number" id="delay_PS6_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS7_id" maxlength="8">
+        <input type="number" id="delay_PS7_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS8_id" maxlength="8">
+        <input type="number" id="delay_PS8_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS9_id" maxlength="8">
+        <input type="number" id="delay_PS9_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS10_id" maxlength="8">
+        <input type="number" id="delay_PS10_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS11_id" maxlength="8">
+        <input type="number" id="delay_PS11_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS12_id" maxlength="8">
+        <input type="number" id="delay_PS12_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS13_id" maxlength="8">
+        <input type="number" id="delay_PS13_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS14_id" maxlength="8">
+        <input type="number" id="delay_PS14_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS15_id" maxlength="8">
+        <input type="number" id="delay_PS15_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS16_id" maxlength="8">
+        <input type="number" id="delay_PS16_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS17_id" maxlength="8">
+        <input type="number" id="delay_PS17_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS18_id" maxlength="8">
+        <input type="number" id="delay_PS18_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS19_id" maxlength="8">
+        <input type="number" id="delay_PS19_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS20_id" maxlength="8">
+        <input type="number" id="delay_PS20_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS21_id" maxlength="8">
+        <input type="number" id="delay_PS21_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS22_id" maxlength="8">
+        <input type="number" id="delay_PS22_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS23_id" maxlength="8">
+        <input type="number" id="delay_PS23_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS24_id" maxlength="8">
+        <input type="number" id="delay_PS24_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS25_id" maxlength="8">
+        <input type="number" id="delay_PS25_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS26_id" maxlength="8">
+        <input type="number" id="delay_PS26_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS27_id" maxlength="8">
+        <input type="number" id="delay_PS27_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS28_id" maxlength="8">
+        <input type="number" id="delay_PS28_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS29_id" maxlength="8">
+        <input type="number" id="delay_PS29_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS30_id" maxlength="8">
+        <input type="number" id="delay_PS30_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS31_id" maxlength="8">
+        <input type="number" id="delay_PS31_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS32_id" maxlength="8">
+        <input type="number" id="delay_PS32_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS33_id" maxlength="8">
+        <input type="number" id="delay_PS33_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS34_id" maxlength="8">
+        <input type="number" id="delay_PS34_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS35_id" maxlength="8">
+        <input type="number" id="delay_PS35_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS36_id" maxlength="8">
+        <input type="number" id="delay_PS36_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS37_id" maxlength="8">
+        <input type="number" id="delay_PS37_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS38_id" maxlength="8">
+        <input type="number" id="delay_PS38_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS39_id" maxlength="8">
+        <input type="number" id="delay_PS39_id" min="0" max="9" value="0" step="1">
+        <br>
+        <input type="text" id="dyn_PS40_id" maxlength="8">
+        <input type="number" id="delay_PS40_id" min="0" max="9" value="0" step="1">
+        <br>
+      </fieldset>
+      <fieldset id="Time_Date_fs" disabled>
+        <legend>
+          <input type="checkbox" id="Time_Date_cb" onclick="cb_f(Time_Date_cb,Time_Date_fs)">
+          Synchronize Server Time and Date with Transmitter
+        </legend>
+        <time id="time_id"></time>
+      </fieldset>
+      <fieldset id="Ext_msg_fs" disabled>
+        <legend>
+          <input type="checkbox" id="Ext_msg_cb" onclick="cb_f(Ext_msg_cb,Ext_msg_fs)">
+          External Switchable Messages
+        </legend>
+        <label for=ext_sm1_id>MSG1</label>
+        <input type="text" id="ext_sm1_id">
+        <br>
+        <label for=ext_sm2_id>MSG2</label>
+        <input type="text" id="ext_sm2_id">
+        <br>
+        <label for=ext_sm3_id>MSG3</label>
+        <input type="text" id="ext_sm3_id">
+        <br>
+        <label for=ext_sm4_id>MSG4</label>
+        <input type="text" id="ext_sm4_id">
+        <br>
+        <label for=ext_sm5_id>MSG5</label>
+        <input type="text" id="ext_sm5_id">
+        <br>
+        <label for=ext_sm6_id>MSG6</label>
+        <input type="text" id="ext_sm6_id">
+        <br>
+        <label for=ext_sm7_id>MSG7</label>
+        <input type="text" id="ext_sm7_id">
+        <br>
+        <label for=ext_sm8_id>MSG8</label>
+        <input type="text" id="ext_sm8_id">
+      </fieldset>
+      <fieldset id="Auto_PS_RT_fs"  disabled>
+        <legend>
+          <input type="checkbox" id="Auto_PS_RT_cb" onclick="cb_f(Auto_PS_RT_cb,Auto_PS_RT_fs)">
+          Automatic PS and RT update
+        </legend>
+        <fieldset>
+          <legend>
+            <input type="checkbox" id="_cb" onclick="cb_f(_cb,_fs)">
+            Type of automatic PS and RT update
+          </legend>
+          <input type="radio" id="auto_ps_off_id" value="1" checked>Turn off
+          <input type="radio" id="auto_ps_split_id" value="0" >Split into 9 separate PS
+          <input type="radio" id="auto_ps_scroll_id" value="1" >Scroll PS
+          <input type="number" id="auto_ps_delay_id" min="0" max="9" value="0" step="1">
+        </fieldset>
+        <fieldset>
+          <legend>
+          <input type="checkbox" id="_cb" onclick="cb_f(_cb,_fs)">
+          Auto update PS from txt file (?)
+        </legend>
+        </fieldset>
+        <fieldset>
+          <legend>
+            <input type="checkbox" id="_cb" onclick="cb_f(_cb,_fs)">
+            Radio text (RT)
+          </legend>
+        </fieldset>
+        <fieldset>
+          <legend>
+            <input type="checkbox" id="_cb" onclick="cb_f(_cb,_fs)">
+            Auto update RT from txt file
+          </legend>
+        </fieldset>
+      </fieldset>
+    </form>
+  </body>
+</html>
+

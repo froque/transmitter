@@ -18,6 +18,7 @@
 
 import sys
 import re
+import datetime
 
 if sys.platform == 'win32':
     ## on windows, we need to use the following reactor for serial support
@@ -33,6 +34,7 @@ print
 from twisted.python import usage, log
 from twisted.protocols.basic import LineReceiver
 from twisted.internet.serialport import SerialPort
+from twisted.internet.task import LoopingCall
 from twisted.web.server import Site
 from twisted.web.static import File
 
@@ -155,6 +157,35 @@ class McuProtocol(LineReceiver):
     def setIampAlarm(self, IampAlarm):
         self.writeTransmitter("FAC", chr(int(IampAlarm) + 4))
 
+    # RDS COMMANDS
+    @exportRpc("PI-code")
+    def setPICode(self, country, country_ecc, pr):
+        if  0 <= int(pr) <= 255:
+            print country, country_ecc, pr
+
+    @exportRpc("A0-settings")
+    def setA0Settings(self, tp, ta, ms, dyn_pty, compression, channels, ah, program_type):
+        print tp, ta, ms, dyn_pty, compression, channels, ah, program_type
+
+    @exportRpc("PF-alternative")
+    def setPFAlternative(self, num, freq):
+        if 87.5 <= float(freq) <= 108.0:
+            print num, freq
+
+    # FIXME: test for empty msg, perhaps?
+    @exportRpc("static-PS")
+    def setStaticPS(self, msg, delay):
+        if  0 <= int(delay) <= 9:
+            print msg, delay
+
+    @exportRpc("sync-time")
+    def setSyncTime(self):
+        print datetime.datetime.now()
+
+    @exportRpc("external-messages")
+    def setExternalMessages(self, msg1, msg2, msg3, msg4, msg5, msg6, msg7, msg8):
+        print msg1, msg2, msg3, msg4, msg5, msg6, msg7, msg8
+
     def writeTransmitter(self, command, data):
         self.transport.write('\x00\x00' + command + '\x01' + data + '\x02')
 
@@ -184,6 +215,10 @@ class McuProtocol(LineReceiver):
             self.wsMcuFactory.dispatch("http://example.com/mcu#tx-status", evt)
         except AttributeError:
             print "Could not parse string."
+
+    def updateDatetime(self):
+        date = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        self.wsMcuFactory.dispatch("http://example.com/mcu#update-time", date)
 
 
 ## WS-MCU protocol
@@ -247,6 +282,10 @@ if __name__ == '__main__':
     log.msg('About to open serial port %s [%d baud] ..' % (port, baudrate))
     serialPort = SerialPort(wsMcuFactory.mcuProtocol, port,\
                            reactor, baudrate=baudrate)
+
+    ## Looping Call to keep updating date and time on client
+    lc = LoopingCall(wsMcuFactory.mcuProtocol.updateDatetime)
+    lc.start(1)
 
     ## create embedded web server for static files
     ##

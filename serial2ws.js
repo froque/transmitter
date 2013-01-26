@@ -4,6 +4,10 @@ var retryCount = 0;
 var retryDelay = 2;
 var winterval;
 
+function updateTime(topicUri, date){
+  time_id.innerHTML = date;
+}
+
 function changeCell(v,id){
   if (v > 0){
     id.style.backgroundColor = "red";
@@ -13,19 +17,19 @@ function changeCell(v,id){
 }
 
 function CheckAlarm(AlarmCode_v){
-ampTemp_v    = 0x01 & AlarmCode_v;
-SWR_v        = 0x02 & AlarmCode_v;
-excTemp_v    = 0x04 & AlarmCode_v;
-I_v          = 0x08 & AlarmCode_v;
-ampVoltage_v = 0x10 & AlarmCode_v;
-standby_v    = 0x20 & AlarmCode_v;
+  ampTemp_v    = 0x01 & AlarmCode_v;
+  SWR_v        = 0x02 & AlarmCode_v;
+  excTemp_v    = 0x04 & AlarmCode_v;
+  I_v          = 0x08 & AlarmCode_v;
+  ampVoltage_v = 0x10 & AlarmCode_v;
+  standby_v    = 0x20 & AlarmCode_v;
 
-changeCell(ampTemp_v,ampTemp_id);
-changeCell(SWR_v,SWR_id);
-changeCell(excTemp_v,excTemp_id);
-changeCell(I_v,I_id);
-changeCell(ampVoltage_v,ampVoltage_id);
-changeCell(standby_v,standby_id);
+  changeCell(ampTemp_v,ampTemp_id);
+  changeCell(SWR_v,SWR_id);
+  changeCell(excTemp_v,excTemp_id);
+  changeCell(I_v,I_id);
+  changeCell(ampVoltage_v,ampVoltage_id);
+  changeCell(standby_v,standby_id);
 }
 
 function cb_f(att_cb,att_fs){
@@ -69,6 +73,96 @@ function autoReadTx() {
   }
 }
 
+function setRdsSettings(){
+  var tp_v, ta_v, ms_v, dyn_pty_v, compression_v, channels_v, ah_v;
+
+  if (PI_code_cb.checked){
+    var country_v = country_id.options[country_id.selectedIndex].value;
+    var country_ecc_v = country_ecc_id.options[country_ecc_id.selectedIndex].value;
+    var pr_v = pr_id.value;
+    sess.call("rpc:PI-code",country_v,country_ecc_v,pr_v);
+  }
+  if (A0_settings_cb.checked){
+    if (tp1_id.checked) {
+      tp_v = tp1_id.value;
+    } else {
+      tp_v = tp0_id.value;
+    }
+    if (ta1_id.checked) {
+      ta_v = ta1_id.value;
+    } else {
+      ta_v = ta0_id.value;
+    }
+    if (ms1_id.checked) {
+      ms_v = ms1_id.value;
+    } else {
+      ms_v = ms0_id.value;
+    }
+    if (dyn_pty1_id.checked) {
+      dyn_pty_v = dyn_pty1_id.value;
+    } else {
+      dyn_pty_v = dyn_pty0_id.value;
+    }
+    if (compression1_id.checked) {
+      compression_v = compression1_id.value;
+    } else {
+      compression_v = compression0_id.value;
+    }
+    if (channels1_id.checked) {
+      channels_v = channels1_id.value;
+    } else {
+      channels_v = channels0_id.value;
+    }
+    if (ah1_id.checked) {
+      ah_v = ah1_id.value;
+    } else {
+      ah_v = ah0_id.value;
+    }
+    var program_type_v = program_type_id.options[program_type_id.selectedIndex].value;
+    sess.call("rpc:A0-settings", tp_v, ta_v, ms_v, dyn_pty_v, compression_v, channels_v, ah_v, program_type_v);
+  }
+  if (PF_alternative_cb.checked){
+    if (AF1_cb_id.checked){
+      sess.call("rpc:PF-alternative",1,AF1_id.value);
+    }
+    if (AF2_cb_id.checked){
+      sess.call("rpc:PF-alternative",2,AF2_id.value);
+    }
+    if (AF3_cb_id.checked){
+      sess.call("rpc:PF-alternative",3,AF3_id.value);
+    }
+    if (AF4_cb_id.checked){
+      sess.call("rpc:PF-alternative",4,AF4_id.value);
+    }
+    if (AF5_cb_id.checked){
+      sess.call("rpc:PF-alternative",5,AF5_id.value);
+    }
+    if (AF6_cb_id.checked){
+      sess.call("rpc:PF-alternative",6,AF6_id.value);
+    }
+    if (AF7_cb_id.checked){
+      sess.call("rpc:PF-alternative",7,AF7_id.value);
+    }
+  }
+  if (static_PS_cb.checked){
+    sess.call("rpc:static-PS", static_PS_id.value, delay_PS_id.value);
+  }
+//  if (dynamic_PS_cb.checked){
+//    sess.call("rpc:",);
+//  }
+  if (Time_Date_cb.checked){
+    sess.call("rpc:sync-time");
+  }
+  if (Ext_msg_cb.checked){
+    sess.call("rpc:external-messages", ext_sm1_id.value, ext_sm2_id.value, ext_sm3_id.value,
+                      ext_sm4_id.value, ext_sm5_id.value, ext_sm6_id.value,
+                      ext_sm7_id.value, ext_sm8_id.value);
+  }
+//  if (Auto_PS_RT_cb.checked){
+//    sess.call("rpc:",);
+//  }
+
+}
 function setSettings() {
 
   if (stereo.checked) {
@@ -124,6 +218,7 @@ function connect() {
          // Prefix for CURIE
          sess.prefix("event", "http://example.com/mcu#");
          sess.subscribe("event:tx-status", TransmitterStatus);
+         sess.subscribe("event:update-time", updateTime);
          // Prefix for CURIE
          sess.prefix("rpc", "http://example.com/mcu-control#");
       },
