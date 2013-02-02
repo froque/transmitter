@@ -181,7 +181,7 @@ class McuProtocol(LineReceiver):
     @exportRpc("dynamic-PS")
     def setStaticPS(self, k, msg, delay):
         #not inside k interval
-        if not 1 <= int(k) <= 40:
+        if not 1 <= int(k) <= 99:
             return
         # not inside delay interval
         if not 0 <= int(delay) <= 9:

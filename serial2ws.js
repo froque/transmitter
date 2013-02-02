@@ -148,7 +148,7 @@ function setRdsSettings(){
     sess.call("rpc:static-PS", static_PS_id.value, delay_PS_id.value);
   }
   if (dynamic_PS_cb.checked){
-    for (var i=1; i<41; i++){
+    for (var i=1; i<=99; i++){
       var text = document.getElementById("dyn_PS" + i + "_id").value
       var delay = document.getElementById("delay_PS" + i + "_id").value
       sess.call("rpc:dynamic-PS", i, text, delay );
