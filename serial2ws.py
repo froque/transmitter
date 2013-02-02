@@ -178,20 +178,6 @@ class McuProtocol(LineReceiver):
         if  0 <= int(delay) <= 9:
             print msg, delay
 
-    @exportRpc("dynamic-PS")
-    def setStaticPS(self, k, msg, delay):
-        #not inside k interval
-        if not 1 <= int(k) <= 99:
-            return
-        # not inside delay interval
-        if not 0 <= int(delay) <= 9:
-            return
-        # msg empty
-        if not msg:
-            return
-        print k, msg, delay
-
-
     @exportRpc("sync-time")
     def setSyncTime(self):
         print datetime.datetime.now()
