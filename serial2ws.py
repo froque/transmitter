@@ -159,9 +159,9 @@ class McuProtocol(LineReceiver):
 
     # RDS COMMANDS
     @exportRpc("PI-code")
-    def setPICode(self, country, country_ecc, pr):
+    def setPICode(self, country, country_ecc, area_coverage, pr):
         if  0 <= int(pr) <= 255:
-            print country, country_ecc, pr
+            print country, country_ecc, area_coverage, pr
 
     @exportRpc("A0-settings")
     def setA0Settings(self, tp, ta, ms, dyn_pty, compression, channels, ah, program_type):

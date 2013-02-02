@@ -79,8 +79,9 @@ function setRdsSettings(){
   if (PI_code_cb.checked){
     var country_v = country_id.options[country_id.selectedIndex].value;
     var country_ecc_v = country_ecc_id.options[country_ecc_id.selectedIndex].value;
+    var area_coverage_v = area_coverage_id.options[area_coverage_id.selectedIndex].value;
     var pr_v = pr_id.value;
-    sess.call("rpc:PI-code",country_v,country_ecc_v,pr_v);
+    sess.call("rpc:PI-code", country_v, country_ecc_v, area_coverage_v, pr_v);
   }
   if (A0_settings_cb.checked){
     if (tp1_id.checked) {

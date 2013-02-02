@@ -42,7 +42,26 @@
           <option value="3">E3</option>
           <option value="4">E4</option>
         </select>
-        <label for="pr_id">Area Coverage</label>
+        <label for="area_coverage_id">Area Coverage</label>
+        <select id="area_coverage_id">
+          <option value="0">L</option>
+          <option value="1">I</option>
+          <option value="2">N</option>
+          <option value="3">S</option>
+          <option value="4">R1</option>
+          <option value="5">R2</option>
+          <option value="6">R3</option>
+          <option value="7">R4</option>
+          <option value="8">R5</option>
+          <option value="9">R6</option>
+          <option value="10">R7</option>
+          <option value="11">R8</option>
+          <option value="12">R9</option>
+          <option value="13">R10</option>
+          <option value="14">R11</option>
+          <option value="15">R12</option>
+        </select>
+        <label for="pr_id">Program Reference</label>
         <input type="number" id="pr_id" min="0" max="255" value="0" step="1">
       </fieldset>
       <fieldset id="A0_settings_fs" disabled>
@@ -554,6 +573,7 @@
             <input type="checkbox" id="_cb" onclick="cb_f(_cb,_fs)">
             Radio text (RT)
           </legend>
+          <input type="text" id="RT_id" maxlength="64" placeholder="Insert Radio Text">
         </fieldset>
         <fieldset>
           <legend>
