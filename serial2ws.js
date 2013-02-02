@@ -40,6 +40,21 @@ function cb_f(att_cb,att_fs){
   }
 }
 
+// function to enable or disable the spinbox and following checkbox
+function AF_f(cbox, cbox2, fs){
+  cb_f(cbox,fs)
+  if(cbox2 != null){
+    if(cbox.checked){
+      cbox2.disabled = false;
+    } else {
+      if (cbox2.checked){
+        cbox2.click();
+      }
+      cbox2.disabled = true;
+    }
+  }
+}
+
 // Callback used in PubSub for updating Transmitter Status
 function TransmitterStatus(topicUri, event) {
     AlarmCode.innerHTML = event.AlarmCode;
@@ -123,27 +138,23 @@ function setRdsSettings(){
     sess.call("rpc:A0-settings", tp_v, ta_v, ms_v, dyn_pty_v, compression_v, channels_v, ah_v, program_type_v);
   }
   if (PF_alternative_cb.checked){
-    if (AF1_cb_id.checked){
-      sess.call("rpc:PF-alternative",1,AF1_id.value);
-    }
-    if (AF2_cb_id.checked){
-      sess.call("rpc:PF-alternative",2,AF2_id.value);
-    }
-    if (AF3_cb_id.checked){
-      sess.call("rpc:PF-alternative",3,AF3_id.value);
-    }
-    if (AF4_cb_id.checked){
-      sess.call("rpc:PF-alternative",4,AF4_id.value);
-    }
-    if (AF5_cb_id.checked){
-      sess.call("rpc:PF-alternative",5,AF5_id.value);
-    }
-    if (AF6_cb_id.checked){
-      sess.call("rpc:PF-alternative",6,AF6_id.value);
-    }
-    if (AF7_cb_id.checked){
-      sess.call("rpc:PF-alternative",7,AF7_id.value);
-    }
+      var cb    = new Array();
+      var value = new Array();
+      cb[0] = AF1_cb_id.checked
+      cb[1] = AF2_cb_id.checked
+      cb[2] = AF3_cb_id.checked
+      cb[3] = AF4_cb_id.checked
+      cb[4] = AF5_cb_id.checked
+      cb[5] = AF6_cb_id.checked
+      cb[6] = AF7_cb_id.checked
+      value[0] = AF1_id.value
+      value[1] = AF2_id.value
+      value[2] = AF3_id.value
+      value[3] = AF4_id.value
+      value[4] = AF5_id.value
+      value[5] = AF6_id.value
+      value[6] = AF7_id.value
+      sess.call("rpc:PF-alternative", cb, value)
   }
   if (static_PS_cb.checked){
     sess.call("rpc:static-PS", static_PS_id.value, delay_PS_id.value);

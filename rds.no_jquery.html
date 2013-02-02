@@ -171,34 +171,27 @@
           <input type="checkbox" id="PF_alternative_cb" onclick="cb_f(PF_alternative_cb,PF_alternative_fs)">
           AF - Alternative Frequencies
         </legend>
-        <input type="checkbox" id="AF1_cb_id" onclick="cb_f(AF1_cb_id,AF1_id)">
+        <input type="checkbox" id="AF1_cb_id" onclick="AF_f(AF1_cb_id, AF2_cb_id, AF1_id)">
         <label for="AF1_id">AF1</label>
-        <input type="number" id="AF1_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
-        <br>
-        <input type="checkbox" id="AF2_cb_id" onclick="cb_f(AF2_cb_id,AF2_id)">
+        <input type="number" id="AF1_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
+        <input type="checkbox" id="AF2_cb_id" onclick="AF_f(AF2_cb_id, AF3_cb_id, AF2_id)"  disabled>
         <label for="AF2_id">AF2</label>
-        <input type="number" id="AF2_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
-        <br>
-        <input type="checkbox" id="AF3_cb_id" onclick="cb_f(AF3_cb_id,AF3_id)">
+        <input type="number" id="AF2_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
+        <input type="checkbox" id="AF3_cb_id" onclick="AF_f(AF3_cb_id, AF4_cb_id, AF3_id)"  disabled>
         <label for="AF3_id">AF3</label>
-        <input type="number" id="AF3_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
-        <br>
-        <input type="checkbox" id="AF4_cb_id" onclick="cb_f(AF4_cb_id,AF4_id)">
+        <input type="number" id="AF3_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
+        <input type="checkbox" id="AF4_cb_id" onclick="AF_f(AF4_cb_id, AF5_cb_id, AF4_id)"  disabled>
         <label for="AF4_id">AF4</label>
-        <input type="number" id="AF4_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
-        <br>
-        <input type="checkbox" id="AF5_cb_id" onclick="cb_f(AF5_cb_id,AF5_id)">
+        <input type="number" id="AF4_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
+        <input type="checkbox" id="AF5_cb_id" onclick="AF_f(AF5_cb_id, AF6_cb_id, AF5_id)"  disabled>
         <label for="AF5_id">AF5</label>
-        <input type="number" id="AF5_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
-        <br>
-        <input type="checkbox" id="AF6_cb_id" onclick="cb_f(AF6_cb_id,AF6_id)">
+        <input type="number" id="AF5_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
+        <input type="checkbox" id="AF6_cb_id" onclick="AF_f(AF6_cb_id, AF7_cb_id, AF6_id)"  disabled>
         <label for="AF6_id">AF6</label>
-        <input type="number" id="AF6_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
-        <br>
-        <input type="checkbox" id="AF7_cb_id" onclick="cb_f(AF7_cb_id,AF7_id)">
+        <input type="number" id="AF6_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
+        <input type="checkbox" id="AF7_cb_id" onclick="AF_f(AF7_cb_id, null, AF7_id)"  disabled>
         <label for="AF7_id">AF7</label>
-        <input type="number" id="AF7_id" min="87.5" max="108.0" value="100.0" step="0.1" disabled>
-        <br>
+        <input type="number" id="AF7_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
       </fieldset>
       <fieldset id="static_PS_fs" >
         <legend>

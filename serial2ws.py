@@ -168,9 +168,23 @@ class McuProtocol(LineReceiver):
         print tp, ta, ms, dyn_pty, compression, channels, ah, program_type
 
     @exportRpc("PF-alternative")
-    def setPFAlternative(self, num, freq):
-        if 87.5 <= float(freq) <= 108.0:
-            print num, freq
+    # arrays in javascript are received as lists
+    def setPFAlternative(self, cb, freqs):
+          print "FLIP: ", cb, freqs, type(cb), type(freqs)
+          AFNum = 0
+          for c in cb:
+              if c:
+                  AFNum+=1
+              else:
+                  break
+          print "AF number: ", AFNum
+          for k in range(0,AFNum):
+              freq = float(freqs[k])
+              # NOTE: these limits seem weird,
+              # but are the ones used in the windows program
+              if 87.6 <= freq <= 107.9:
+                  freq_index = int((freq*1000 - 87500) / 100.0)
+                  print freq, freq_index
 
     # FIXME: test for empty msg, perhaps?
     @exportRpc("static-PS")
