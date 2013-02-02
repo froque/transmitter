@@ -196,10 +196,6 @@ class McuProtocol(LineReceiver):
     def setSyncTime(self):
         print datetime.datetime.now()
 
-    @exportRpc("external-messages")
-    def setExternalMessages(self, msg1, msg2, msg3, msg4, msg5, msg6, msg7, msg8):
-        print msg1, msg2, msg3, msg4, msg5, msg6, msg7, msg8
-
     @exportRpc("RT")
     def setExternalMessages(self, RT):
         print "RT: ", RT

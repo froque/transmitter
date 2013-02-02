@@ -158,11 +158,6 @@ function setRdsSettings(){
   if (Time_Date_cb.checked){
     sess.call("rpc:sync-time");
   }
-  if (Ext_msg_cb.checked){
-    sess.call("rpc:external-messages", ext_sm1_id.value, ext_sm2_id.value, ext_sm3_id.value,
-                      ext_sm4_id.value, ext_sm5_id.value, ext_sm6_id.value,
-                      ext_sm7_id.value, ext_sm8_id.value);
-  }
   if (RT_cb.checked){
     sess.call("rpc:RT",RT_id.value);
   }
