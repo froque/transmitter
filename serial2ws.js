@@ -163,9 +163,9 @@ function setRdsSettings(){
                       ext_sm4_id.value, ext_sm5_id.value, ext_sm6_id.value,
                       ext_sm7_id.value, ext_sm8_id.value);
   }
-//  if (Auto_PS_RT_cb.checked){
-//    sess.call("rpc:",);
-//  }
+  if (RT_cb.checked){
+    sess.call("rpc:RT",RT_id.value);
+  }
 
 }
 function setSettings() {

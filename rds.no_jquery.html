@@ -547,40 +547,12 @@
         <label for=ext_sm8_id>MSG8</label>
         <input type="text" id="ext_sm8_id">
       </fieldset>
-      <fieldset id="Auto_PS_RT_fs"  disabled>
+      <fieldset id="RT_fs"  disabled>
         <legend>
-          <input type="checkbox" id="Auto_PS_RT_cb" onclick="cb_f(Auto_PS_RT_cb,Auto_PS_RT_fs)">
-          Automatic PS and RT update
+          <input type="checkbox" id="RT_cb" onclick="cb_f(RT_cb,RT_fs)">
+          Radio Text (RT)
         </legend>
-        <fieldset>
-          <legend>
-            <input type="checkbox" id="_cb" onclick="cb_f(_cb,_fs)">
-            Type of automatic PS and RT update
-          </legend>
-          <input type="radio" id="auto_ps_off_id" value="1" checked>Turn off
-          <input type="radio" id="auto_ps_split_id" value="0" >Split into 9 separate PS
-          <input type="radio" id="auto_ps_scroll_id" value="1" >Scroll PS
-          <input type="number" id="auto_ps_delay_id" min="0" max="9" value="0" step="1">
-        </fieldset>
-        <fieldset>
-          <legend>
-          <input type="checkbox" id="_cb" onclick="cb_f(_cb,_fs)">
-          Auto update PS from txt file (?)
-        </legend>
-        </fieldset>
-        <fieldset>
-          <legend>
-            <input type="checkbox" id="_cb" onclick="cb_f(_cb,_fs)">
-            Radio text (RT)
-          </legend>
-          <input type="text" id="RT_id" maxlength="64" placeholder="Insert Radio Text">
-        </fieldset>
-        <fieldset>
-          <legend>
-            <input type="checkbox" id="_cb" onclick="cb_f(_cb,_fs)">
-            Auto update RT from txt file
-          </legend>
-        </fieldset>
+        <input type="text" id="RT_id" maxlength="64" placeholder="Insert Radio Text">
       </fieldset>
     </form>
   </body>

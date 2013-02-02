@@ -200,6 +200,10 @@ class McuProtocol(LineReceiver):
     def setExternalMessages(self, msg1, msg2, msg3, msg4, msg5, msg6, msg7, msg8):
         print msg1, msg2, msg3, msg4, msg5, msg6, msg7, msg8
 
+    @exportRpc("RT")
+    def setExternalMessages(self, RT):
+        print "RT: ", RT
+
     def writeTransmitter(self, command, data):
         self.transport.write('\x00\x00' + command + '\x01' + data + '\x02')
 
