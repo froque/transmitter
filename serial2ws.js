@@ -157,7 +157,7 @@ function setRdsSettings(){
       sess.call("rpc:PF-alternative", cb, value)
   }
   if (static_PS_cb.checked){
-    sess.call("rpc:static-PS", static_PS_id.value, delay_PS_id.value);
+    sess.call("rpc:static-PS", static_PS_id.value);
   }
   if (Time_Date_cb.checked){
     sess.call("rpc:sync-time");

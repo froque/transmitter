@@ -188,9 +188,9 @@ class McuProtocol(LineReceiver):
 
     # FIXME: test for empty msg, perhaps?
     @exportRpc("static-PS")
-    def setStaticPS(self, msg, delay):
-        if  0 <= int(delay) <= 9:
-            print msg, delay
+    def setStaticPS(self, msg):
+        if  0 <= len(msg) <= 8:
+            print msg
 
     @exportRpc("sync-time")
     def setSyncTime(self):
