@@ -1,46 +1,43 @@
-MG3           Text8.Text & Chr$(13) 'adds break after the text line (code is 13); Max 64 chars
-TIME"
-DATE"                 'Chr$(43) & Chr$(70) & Chr$(22) & Chr$(17)
-MG4
-MS
-MS
-AF0"                 'Chr$(43) & Chr$(70) & Chr$(22) & Chr$(17)
-AF1"                 'Chr$(43) & Chr$(70) & Chr$(22) & Chr$(17)
-AF2"                 'Chr$(43) & Chr$(70) & Chr$(22) & Chr$(17)
-AF3"                 'Chr$(43) & Chr$(70) & Chr$(22) & Chr$(17)
-AF4"                 'Chr$(43) & Chr$(70) & Chr$(22) & Chr$(17)
-AF5"                 'Chr$(43) & Chr$(70) & Chr$(22) & Chr$(17)
-AF6"                 'Chr$(43) & Chr$(70) & Chr$(22) & Chr$(17)
-AF7"                 'Chr$(43) & Chr$(70) & Chr$(22) & Chr$(17)
-Did0
-Did0
-Did1
-Did1
-TA
-Did3
-Did3
-Did2
-Did2
-CCAC"    'Program reference, lower byte of PI   Command24_Click()             Str$(CountryCode * 16 + AreaCoverage)
-PREF"    'Program reference, lower byte of PI
-ECC
-PTY"     'Program Type
-PWR
-PWR
-MG0
-PD00
-PD01
-PS00
-PS00
-PS01
-PS01
-PD00
-MG5
-MG1
-MG6
-MG7
-TA
-TP
-MG2
-RT
-TP
+TIME      Time, duh                               Chr$(Hour(Now) + 4); Chr$(Minute(Now) + 4); Chr$(Second(Now) + 4)
+DATE      Date                                    Chr$(Year(Now) - 2004 + 4); Chr$(Month(Now) + 4); Chr$(Day(Now) + 4)
+
+MS        Music Speech                            On ("1") / Off ("0")
+TA        Traffic Announcement                    On ("1") / Off ("0")
+TP        Traffic Programme                       On ("1") / Off ("0")
+RT        Radio Text                              Add Carriage return 0x0D (13). Maximum of 64  characters. 
+                                                      Should clear previous buffer with blank space. (Maybe not needed, because of \r char)
+        
+Did0      Stereo/Mono                            On ("1") / Off ("0")
+Did1      Artificial head                        On ("1") / Off ("0")
+Did2      Compression                            On ("1") / Off ("0")
+Did3      Dynamic pty                            On ("1") / Off ("0")
+
+CCAC      Country Code + AreaCoverage            Str$(CountryCode * 16 + AreaCoverage)
+PREF      Program Reference                      Str$(ProgramReference)    from 0 to 255
+ECC       ECC code                               Chr$(ECC + 4)
+PTY       Program Type                           Str$(PTY)
+PWR       Activate/Deactivate RDS                On ("1") / Off ("0")
+
+PD00      PS00 delay                             Str$(Combo4.ListIndex)
+PD01      PS01 delay. Up to PD99
+PS00      Programme Station 00                   Maximum of 8 characters.
+PS01      Programme Station 01. Up to PS99       Maximum of 8 characters.
+
+
+AF0       How many alternatives frequencies?     Chr$(AFNum + 224 + 4)
+AF1       Alternative frequency 1                Chr$(AF1 + 4)     AFx is the index of combobox
+AF2       Alternative frequency 2                Chr$(AF2 + 4)     All AFx not used must be set to 0 (actually 4, due to offset)
+AF3       Alternative frequency 3                Chr$(AF3 + 4)     By order
+AF4       Alternative frequency 4                Chr$(AF4 + 4)
+AF5       Alternative frequency 5                Chr$(AF5 + 4)
+AF6       Alternative frequency 6                Chr$(AF6 + 4)
+AF7       Alternative frequency 7                Chr$(AF7 + 4)
+
+MG0       External message 0                     Text6.Text & Chr$(13). Maximum of 64 characters
+MG1       External message 1
+MG2       External message 2
+MG3       External message 3
+MG4       External message 4
+MG5       External message 5
+MG6       External message 6
+MG7       External message 7
