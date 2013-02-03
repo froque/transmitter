@@ -7,6 +7,12 @@
     <script type="text/javascript" src="serial2ws.js"></script>
   </head>
   <body>
+    <nav id="topbar">
+      <a href="#fm">FM Options</a>
+      <a href="#rds">RDS Options</a>
+    </nav>
+    <article id="fm">
+    <h1>FM Options</h1>
     <table>
       <tr>
         <td>
@@ -472,8 +478,6 @@
               <td id="ampVoltage_id">Voltage Alarm</td>
               <td id="standby_id">Standby</td>
             </tr>
-            <br/>
-            <p id="AlarmCode_id"></p>
           </table>
           <table>
             <tr>
@@ -619,5 +623,230 @@
         </td>
       </tr>
     </table>
+      <footer>
+        <nav><a href="#topbar">back to top</a></nav>
+      </footer>
+    </article>
+    <article id="rds">
+    <h1>RDS Options</h1>
+    <button id="submit" onclick="setRdsSettings()">Submit</button>
+    <form>
+      <fieldset id="RDS_fs" disabled>
+        <legend>
+          <input type="checkbox" id="RDS_cb" onclick="cb_f(RDS_cb,RDS_fs)">
+            Enable RDS
+          </legend>
+        <input type="radio" name="rds" id="rds1_id" value="1" checked>On
+        <input type="radio" name="rds" id="rds0_id" value="0" >Off
+      </fieldset>
+      <fieldset id="PI_code_fs" disabled>
+        <legend>
+          <input type="checkbox" id="PI_code_cb" onclick="cb_f(PI_code_cb,PI_code_fs)">
+          PI Code
+        </legend>
+        <label for="country_id">Country</label>
+        <select id="country_id">
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">A</option>
+          <option value="11">B</option>
+          <option value="12">C</option>
+          <option value="13">D</option>
+          <option value="14">E</option>
+          <option value="15">F</option>
+        </select>
+        <label for="country_ecc_id">Country - ECC</label>
+        <select id="country_ecc_id">
+          <option value="0">E0</option>
+          <option value="1">E1</option>
+          <option value="2">E2</option>
+          <option value="3">E3</option>
+          <option value="4">E4</option>
+        </select>
+        <label for="area_coverage_id">Area Coverage</label>
+        <select id="area_coverage_id">
+          <option value="0">L</option>
+          <option value="1">I</option>
+          <option value="2">N</option>
+          <option value="3">S</option>
+          <option value="4">R1</option>
+          <option value="5">R2</option>
+          <option value="6">R3</option>
+          <option value="7">R4</option>
+          <option value="8">R5</option>
+          <option value="9">R6</option>
+          <option value="10">R7</option>
+          <option value="11">R8</option>
+          <option value="12">R9</option>
+          <option value="13">R10</option>
+          <option value="14">R11</option>
+          <option value="15">R12</option>
+        </select>
+        <label for="pr_id">Program Reference</label>
+        <input type="number" id="pr_id" min="0" max="255" value="0" step="1">
+      </fieldset>
+      <fieldset id="A0_settings_fs" disabled>
+        <legend>
+          <input type="checkbox" id="A0_settings_cb" onclick="cb_f(A0_settings_cb,A0_settings_fs)">
+          A0 Settings
+        </legend>
+        <table>
+          <tr>
+            <td>
+              <fieldset>
+                <legend>TP</legend>
+                <input type="radio" name="tp" id="tp1_id" value="1" >1
+                <input type="radio" name="tp" id="tp0_id" value="0" checked >0
+              </fieldset>
+            </td>
+            <td>
+              <fieldset>
+                <legend>TA</legend>
+                <input type="radio" name="ta" id="ta1_id" value="1" >1
+                <input type="radio" name="ta" id="ta0_id" value="0" checked >0
+              </fieldset>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <fieldset>
+                <legend>Music/Speech</legend>
+                <input type="radio" name="ms" id="ms1_id" value="1" checked >1
+                <input type="radio" name="ms" id="ms0_id" value="0" >0
+              </fieldset>
+            </td>
+            <td>
+              <fieldset>
+                <legend>Dynamic PTY</legend>
+                <input type="radio" name="dyn_pty1" id="dyn_pty1_id" value="1" checked >Y
+                <input type="radio" name="dyn_pty1" id="dyn_pty0_id" value="0" >N
+              </fieldset>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <fieldset>
+                <legend>Compression</legend>
+                <input type="radio" name="compression1" id="compression1_id" value="1" checked >Y
+                <input type="radio" name="compression1" id="compression0_id" value="0" >N
+              </fieldset>
+            </td>
+            <td>
+              <fieldset>
+                <legend>Mono/Stereo</legend>
+                <input type="radio" name="channels1" id="channels1_id" value="1" checked >S
+                <input type="radio" name="channels1" id="channels0_id" value="0" >M
+              </fieldset>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <fieldset>
+                <legend>Artificial head</legend>
+                <input type="radio" name="ah" id="ah1_id" value="1" checked >Y
+                <input type="radio" name="ah" id="ah0_id" value="0" >N
+              </fieldset>
+            </td>
+            <td>
+              <label for="program_type_id">Program Type - PTY</label>
+              <select id="program_type_id">
+                <option value="0">Undefined</option>
+                <option value="1">News</option>
+                <option value="2">Affairs</option>
+                <option value="3">Info</option>
+                <option value="4">Sport</option>
+                <option value="5">Educate</option>
+                <option value="6">Drama</option>
+                <option value="7">Culture</option>
+                <option value="8">Science</option>
+                <option value="9">Varied</option>
+                <option value="10">Pop Music</option>
+                <option value="11">Rock Music</option>
+                <option value="12">Easy Music</option>
+                <option value="13">Light Music</option>
+                <option value="14">Classics</option>
+                <option value="15">Other Music</option>
+                <option value="16">Weather</option>
+                <option value="17">Finance</option>
+                <option value="18">Children's program</option>
+                <option value="19">Social Affairs</option>
+                <option value="20">Religion</option>
+                <option value="21">Phone In</option>
+                <option value="22">Travel</option>
+                <option value="23">Leisure</option>
+                <option value="24">Jazz Music</option>
+                <option value="25">Country Music</option>
+                <option value="26">National Music</option>
+                <option value="27">Oldies Music</option>
+                <option value="28">Folk Music</option>
+                <option value="29">Documentary</option>
+                <option value="30">Alarm test</option>
+                <option value="31">Alarm</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+      <fieldset id="PF_alternative_fs"  disabled>
+        <legend>
+          <input type="checkbox" id="PF_alternative_cb" onclick="cb_f(PF_alternative_cb,PF_alternative_fs)">
+          AF - Alternative Frequencies
+        </legend>
+        <input type="checkbox" id="AF1_cb_id" onclick="AF_f(AF1_cb_id, AF2_cb_id, AF1_id)">
+        <label for="AF1_id">AF1</label>
+        <input type="number" id="AF1_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
+        <input type="checkbox" id="AF2_cb_id" onclick="AF_f(AF2_cb_id, AF3_cb_id, AF2_id)"  disabled>
+        <label for="AF2_id">AF2</label>
+        <input type="number" id="AF2_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
+        <input type="checkbox" id="AF3_cb_id" onclick="AF_f(AF3_cb_id, AF4_cb_id, AF3_id)"  disabled>
+        <label for="AF3_id">AF3</label>
+        <input type="number" id="AF3_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
+        <input type="checkbox" id="AF4_cb_id" onclick="AF_f(AF4_cb_id, AF5_cb_id, AF4_id)"  disabled>
+        <label for="AF4_id">AF4</label>
+        <input type="number" id="AF4_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
+        <input type="checkbox" id="AF5_cb_id" onclick="AF_f(AF5_cb_id, AF6_cb_id, AF5_id)"  disabled>
+        <label for="AF5_id">AF5</label>
+        <input type="number" id="AF5_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
+        <input type="checkbox" id="AF6_cb_id" onclick="AF_f(AF6_cb_id, AF7_cb_id, AF6_id)"  disabled>
+        <label for="AF6_id">AF6</label>
+        <input type="number" id="AF6_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
+        <input type="checkbox" id="AF7_cb_id" onclick="AF_f(AF7_cb_id, null, AF7_id)"  disabled>
+        <label for="AF7_id">AF7</label>
+        <input type="number" id="AF7_id" min="87.6" max="107.9" value="100.0" step="0.1" disabled>
+      </fieldset>
+      <fieldset id="static_PS_fs" >
+        <legend>
+          <input type="checkbox" id="static_PS_cb" onclick="cb_f(static_PS_cb,static_PS_fs)">
+          Static PS
+        </legend>
+        <input type="text" id="static_PS_id" maxlength="8" placeholder="Insert Static PS">
+      </fieldset>
+      <fieldset id="Time_Date_fs" disabled>
+        <legend>
+          <input type="checkbox" id="Time_Date_cb" onclick="cb_f(Time_Date_cb,Time_Date_fs)">
+          Synchronize Server Time and Date with Transmitter
+        </legend>
+        <time id="time_id"></time>
+      </fieldset>
+      <fieldset id="RT_fs"  disabled>
+        <legend>
+          <input type="checkbox" id="RT_cb" onclick="cb_f(RT_cb,RT_fs)">
+          Radio Text (RT)
+        </legend>
+        <input type="text" id="RT_id" maxlength="64" placeholder="Insert Radio Text">
+      </fieldset>
+    </form>
+      <footer>
+        <nav><a href="#topbar">back to top</a></nav>
+      </footer>
+    </article>
   </body>
 </html>
