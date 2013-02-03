@@ -10,6 +10,14 @@
     <button id="submit" onclick="setRdsSettings()">Submit</button>
     <div id="statusline"></div>
     <form>
+      <fieldset id="RDS_fs" disabled>
+        <legend>
+          <input type="checkbox" id="RDS_cb" onclick="cb_f(RDS_cb,RDS_fs)">
+            Enable RDS
+          </legend>
+        <input type="radio" name="rds" id="rds1_id" value="1" checked>On
+        <input type="radio" name="rds" id="rds0_id" value="0" >Off
+      </fieldset>
       <fieldset id="PI_code_fs" disabled>
         <legend>
           <input type="checkbox" id="PI_code_cb" onclick="cb_f(PI_code_cb,PI_code_fs)">

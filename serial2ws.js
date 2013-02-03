@@ -4,6 +4,14 @@ var retryCount = 0;
 var retryDelay = 2;
 var winterval;
 
+function getRadioValue(radioGroup){
+  for (var k = 0; k < document.getElementsByName(radioGroup).length; k++){
+    if (document.getElementsByName(radioGroup)[k].checked){
+      return document.getElementsByName(radioGroup)[k].value;
+    }
+  }
+}
+
 function updateTime(topicUri, date){
   time_id.innerHTML = date;
 }
@@ -91,6 +99,9 @@ function autoReadTx() {
 function setRdsSettings(){
   var tp_v, ta_v, ms_v, dyn_pty_v, compression_v, channels_v, ah_v;
 
+  if (RDS_cb.checked){
+    sess.call("rpc:set-RDS", getRadioValue("rds"));
+  }
   if (PI_code_cb.checked){
     var country_v = country_id.options[country_id.selectedIndex].value;
     var country_ecc_v = country_ecc_id.options[country_ecc_id.selectedIndex].value;

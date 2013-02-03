@@ -158,6 +158,10 @@ class McuProtocol(LineReceiver):
         self.writeTransmitter("FAC", chr(int(IampAlarm) + 4))
 
     # RDS COMMANDS
+    @exportRpc("set-RDS")
+    def setRDS(self, state):
+        print state
+
     @exportRpc("PI-code")
     def setPICode(self, country, country_ecc, area_coverage, pr):
         if  0 <= int(pr) <= 255:
