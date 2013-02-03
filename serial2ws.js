@@ -97,8 +97,6 @@ function autoReadTx() {
 }
 
 function setRdsSettings(){
-  var tp_v, ta_v, ms_v, dyn_pty_v, compression_v, channels_v, ah_v;
-
   if (RDS_cb.checked){
     sess.call("rpc:set-RDS", getRadioValue("rds"));
   }
@@ -110,41 +108,13 @@ function setRdsSettings(){
     sess.call("rpc:PI-code", country_v, country_ecc_v, area_coverage_v, pr_v);
   }
   if (A0_settings_cb.checked){
-    if (tp1_id.checked) {
-      tp_v = tp1_id.value;
-    } else {
-      tp_v = tp0_id.value;
-    }
-    if (ta1_id.checked) {
-      ta_v = ta1_id.value;
-    } else {
-      ta_v = ta0_id.value;
-    }
-    if (ms1_id.checked) {
-      ms_v = ms1_id.value;
-    } else {
-      ms_v = ms0_id.value;
-    }
-    if (dyn_pty1_id.checked) {
-      dyn_pty_v = dyn_pty1_id.value;
-    } else {
-      dyn_pty_v = dyn_pty0_id.value;
-    }
-    if (compression1_id.checked) {
-      compression_v = compression1_id.value;
-    } else {
-      compression_v = compression0_id.value;
-    }
-    if (channels1_id.checked) {
-      channels_v = channels1_id.value;
-    } else {
-      channels_v = channels0_id.value;
-    }
-    if (ah1_id.checked) {
-      ah_v = ah1_id.value;
-    } else {
-      ah_v = ah0_id.value;
-    }
+    var tp_v = getRadioValue("tp")
+    var ta_v = getRadioValue("ta")
+    var ms_v = getRadioValue("ms")
+    var dyn_pty_v = getRadioValue("dyn_pty1")
+    var compression_v = getRadioValue("compression1")
+    var channels_v = getRadioValue("channels1")
+    var ah_v = getRadioValue("ah")
     var program_type_v = program_type_id.options[program_type_id.selectedIndex].value;
     sess.call("rpc:A0-settings", tp_v, ta_v, ms_v, dyn_pty_v, compression_v, channels_v, ah_v, program_type_v);
   }
