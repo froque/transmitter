@@ -174,7 +174,6 @@ class McuProtocol(LineReceiver):
     @exportRpc("PF-alternative")
     # arrays in javascript are received as lists
     def setPFAlternative(self, cb, freqs):
-          print "FLIP: ", cb, freqs, type(cb), type(freqs)
           AFNum = 0
           for c in cb:
               if c:
@@ -193,7 +192,7 @@ class McuProtocol(LineReceiver):
     # FIXME: test for empty msg, perhaps?
     @exportRpc("static-PS")
     def setStaticPS(self, msg):
-        if  0 <= len(msg) <= 8:
+        if  0 < len(msg) <= 8:
             print msg
 
     @exportRpc("sync-time")
@@ -201,8 +200,9 @@ class McuProtocol(LineReceiver):
         print datetime.datetime.now()
 
     @exportRpc("RT")
-    def setExternalMessages(self, RT):
-        print "RT: ", RT
+    def setExternalMessages(self, msg):
+        if  0 < len(msg) <= 64:
+            print msg
 
     def writeTransmitter(self, command, data):
         self.transport.write('\x00\x00' + command + '\x01' + data + '\x02')
