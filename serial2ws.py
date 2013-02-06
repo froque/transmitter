@@ -160,16 +160,25 @@ class McuProtocol(LineReceiver):
     # RDS COMMANDS
     @exportRpc("set-RDS")
     def setRDS(self, state):
-        print state
+        self.writeTransmitter("PWR", state.encode('ascii', 'ignore'))
 
     @exportRpc("PI-code")
     def setPICode(self, country, country_ecc, area_coverage, pr):
         if  0 <= int(pr) <= 255:
-            print country, country_ecc, area_coverage, pr
+            self.writeTransmitter("CCAC", str(int(country) * 16 + int(area_coverage)))
+            self.writeTransmitter("ECC", chr(int(country_ecc) + 4))
+            self.writeTransmitter("PREF", str(int(pr)))
 
     @exportRpc("A0-settings")
     def setA0Settings(self, tp, ta, ms, dyn_pty, compression, channels, ah, program_type):
-        print tp, ta, ms, dyn_pty, compression, channels, ah, program_type
+        self.writeTransmitter("TP",tp.encode('ascii', 'ignore'))
+        self.writeTransmitter("TA",ta.encode('ascii', 'ignore'))
+        self.writeTransmitter("MS",ms.encode('ascii', 'ignore'))
+        self.writeTransmitter("Did3",dyn_pty.encode('ascii', 'ignore'))
+        self.writeTransmitter("Did2",compression.encode('ascii', 'ignore'))
+        self.writeTransmitter("Did0",channels.encode('ascii', 'ignore'))
+        self.writeTransmitter("Did1",ah.encode('ascii', 'ignore'))
+        self.writeTransmitter("PTY",program_type.encode('ascii', 'ignore'))
 
     @exportRpc("PF-alternative")
     # arrays in javascript are received as lists
@@ -180,32 +189,50 @@ class McuProtocol(LineReceiver):
                   AFNum+=1
               else:
                   break
-          print "AF number: ", AFNum
+          self.writeTransmitter("AF0", chr(AFNum + 224 + 4))
+
           for k in range(0,AFNum):
               freq = float(freqs[k])
               # NOTE: these limits seem weird,
               # but are the ones used in the windows program
               if 87.6 <= freq <= 107.9:
                   freq_index = int((freq*1000 - 87500) / 100.0)
-                  print freq, freq_index
+                  self.writeTransmitter("AF" + str(k+1), chr(freq_index + 4))
 
-    # FIXME: test for empty msg, perhaps?
     @exportRpc("static-PS")
     def setStaticPS(self, msg):
         if  0 < len(msg) <= 8:
-            print msg
+            # translate from unicode, and add spaces up to 8 chars
+            msg2 = msg.encode('ascii', 'ignore')
+            msg2 = '%-8s' % msg2
+            self.writeTransmitter("PS00", msg2)
+            # set constant delay of 9 minutes
+            self.writeTransmitter("PD00", "9")
+
+            # set all other PS to empty spaces and 0 minutes delay
+            empty = "        "
+            for k in range(1,100):
+                self.writeTransmitter("PS" + "%02d" %k, empty)
+                self.writeTransmitter("PD" + "%02d" %k, "0")
 
     @exportRpc("sync-time")
     def setSyncTime(self):
-        print datetime.datetime.now()
+        t = datetime.datetime.now()
+        self.writeTransmitter("TIME", chr(t.hour + 4) + chr(t.minute + 4) + chr(t.second + 4))
+        self.writeTransmitter("DATE", chr(t.year - 2004 + 4) + chr(t.month + 4) + chr(t.day + 4))
 
     @exportRpc("RT")
     def setExternalMessages(self, msg):
         if  0 < len(msg) <= 64:
-            print msg
+            msg2 = msg.encode('ascii', 'ignore')
+            msg2 = '%-64s' % msg2
+            self.writeTransmitter("RT", msg2)
 
     def writeTransmitter(self, command, data):
-        self.transport.write('\x00\x00' + command + '\x01' + data + '\x02')
+        try:
+            self.transport.write('\x00\x00' + command + '\x01' + data + '\x02')
+        except TypeError:
+            print "Wrong type data"
 
     def connectionMade(self):
         log.msg('Serial port connected.')
