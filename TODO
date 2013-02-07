@@ -1,7 +1,3 @@
  * secure connection: ssl, etc
  * same port for websocket and html
- * Update README with instructions
 
-BUGS:
- * Bug Right is mapped to left and left to right in transmitter
- * sending both right and left does not work for both, only one

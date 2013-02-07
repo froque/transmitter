@@ -1,0 +1,45 @@
+Requirements:
+Python v2
+Twisted
+AutobahnPython
+
+Tested on:
+Python 2.7.3
+Twisted 11.1.0-1ubuntu2
+AutobahnPython 0.5.14
+
+Usage: transmitter.py [options]
+Options:
+      --baudPower=  Serial baudrate for Power settings [default: 9600]
+      --baudRDS=    Serial baudrate for RDS settings [default: 19200]
+  -p, --port=       Serial port to use [default: /dev/ttyUSB0]
+  -w, --webport=    Web port to use for embedded Web server [default: 8080]
+  -s, --wsurl=      WebSocket port to use for embedded WebSocket server
+                    [default: ws://localhost:9000]
+      --version     Display Twisted version and exit.
+      --help        Display this help and exit.
+
+
+Example:
+
+./transmitter.py -s ws://localhost:8081 -p /dev/ttyUSB0 --baudPower=9600 --baudRDS=19200
+
+
+
+Details:
+The transmitter has the special tags @DATE and @TIME for the RDS PS option. 
+The transmitter has support for rolling PS, but that is not implemented.
+
+
+Baudrates:
+The baudrates deserve explanation. 
+The two baud rates are due to the way the transmitter is setup up.
+From factory, both are setup to 14400 bps, which is Windows specific. 
+The RDS module snoops in on the connection to the power module.
+We asked the manufacturer to changed the baudrate, without realising that there were two baud rates. 
+He changed the power rate to 9600, and the RDS module can not be configured for that option, but it can be for 19200.
+
+
+Known Bugs:
+ * Right Gain is mapped to Left Gain and Left Gain to Right Gain in transmitter
+ * sending both right and left does not work for both, only one.
