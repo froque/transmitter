@@ -25,7 +25,8 @@ from autobahn.wamp import WampServerFactory, WampServerProtocol, exportRpc
 
 class Serial2WsOptions(usage.Options):
     optParameters = [
-      ['baudrate', 'b', 9600, 'Serial baudrate'],
+      ['baudPower', '', 9600, 'Serial baudrate for Power settings'],
+      ['baudRDS', '', 19200, 'Serial baudrate for RDS settings'],
       ['port', 'p', '/dev/ttyUSB0', 'Serial port to use'],
       ['webport', 'w', 8080, 'Web port to use for embedded Web server'],
       ['wsurl', 's', "ws://localhost:9000",\
@@ -39,19 +40,21 @@ class McuProtocol(LineReceiver):
     delimiter = '$'
 
     ## need a reference to our WS-MCU gateway factory to dispatch PubSub events
-    def __init__(self, wsMcuFactory):
+    def __init__(self, wsMcuFactory, baudPower, baudRDS):
         self.wsMcuFactory = wsMcuFactory
+        self.baudPower    = baudPower
+        self.baudRDS      = baudRDS
 
     ## this method is exported as RPC and can be called by connected clients
     @exportRpc("read-tx")
     def readTX(self):
-        self.writeTransmitter("FM", '\x20')
+        self.writeTransmitter("FM", '\x20', self.baudPower)
 
     @exportRpc("set-power")
     def setPower(self, power):
         if 0 <= float(power) <= 100.0:
             power_s = chr(int(round(int(power) / 100.0 * 34) + 4))
-            self.writeTransmitter("FO", power_s)
+            self.writeTransmitter("FO", power_s, self.baudPower)
 
     @exportRpc("set-freq")
     def setFrequency(self, freq):
@@ -62,14 +65,14 @@ class McuProtocol(LineReceiver):
             low = chr((int(freq / 5) - int(int(freq / 5) / 128) * 128) + 4)
             #high part of freq
             high = chr((int(int(freq / 5) / 128)) + 4)
-            self.writeTransmitter("FF", low + high)
+            self.writeTransmitter("FF", low + high, self.baudPower)
 
     @exportRpc("set-channels")
     def setChannels(self, channels):
         if 0 <= int(channels) <= 1:
             # convert from int to ASCII
             channels = str(channels)
-            self.writeTransmitter("FS", channels)
+            self.writeTransmitter("FS", channels, self.baudPower)
 
     @exportRpc("set-DSP")
     def setDSP(self, attack, decay, interval, threshold, compression):
@@ -97,66 +100,66 @@ class McuProtocol(LineReceiver):
         self.setLeftGain(left_gain)
 
     def setTreble(self, treble):
-        self.writeTransmitter("FDT", chr(int(treble) + 4))
+        self.writeTransmitter("FDT", chr(int(treble) + 4), self.baudPower)
 
     def setBass(self, bass):
-        self.writeTransmitter("FDB", chr(int(bass) + 4))
+        self.writeTransmitter("FDB", chr(int(bass) + 4), self.baudPower)
 
     def setAttack(self, attack):
-        self.writeTransmitter("FDA", chr(int(attack) + 4))
+        self.writeTransmitter("FDA", chr(int(attack) + 4), self.baudPower)
 
     def setDecay(self, decay):
-        self.writeTransmitter("FDD", chr(int(decay) + 4))
+        self.writeTransmitter("FDD", chr(int(decay) + 4), self.baudPower)
 
     def setThreshold(self, threshold):
-        self.writeTransmitter("FDH", chr(int(threshold) + 4))
+        self.writeTransmitter("FDH", chr(int(threshold) + 4), self.baudPower)
 
     def setCompression(self, compression):
-        self.writeTransmitter("FDC", chr(int(compression) + 4))
+        self.writeTransmitter("FDC", chr(int(compression) + 4), self.baudPower)
 
     def setIntegration(self, integration):
-        self.writeTransmitter("FDI", chr(int(integration) + 4))
+        self.writeTransmitter("FDI", chr(int(integration) + 4), self.baudPower)
 
     def setLeftGain(self, leftGain):
-        self.writeTransmitter("FDGL", chr(int(leftGain) + 4))
+        self.writeTransmitter("FDGL", chr(int(leftGain) + 4), self.baudPower)
 
     def setRightGain(self, rightGain):
-        self.writeTransmitter("FDGR", chr(int(rightGain) + 4))
+        self.writeTransmitter("FDGR", chr(int(rightGain) + 4), self.baudPower)
 
     def setTempAlarm(self, tempAlarm):
-        self.writeTransmitter("FAT", chr(int(tempAlarm) + 4))
+        self.writeTransmitter("FAT", chr(int(tempAlarm) + 4), self.baudPower)
 
     def setSWRAlarm(self, SWRAlarm):
-        self.writeTransmitter("FAS", chr(int(SWRAlarm) + 4))
+        self.writeTransmitter("FAS", chr(int(SWRAlarm) + 4), self.baudPower)
 
     def setUampAlarm(self, UampAlarm):
-        self.writeTransmitter("FAU", chr(int(UampAlarm) + 4))
+        self.writeTransmitter("FAU", chr(int(UampAlarm) + 4), self.baudPower)
 
     def setIampAlarm(self, IampAlarm):
-        self.writeTransmitter("FAC", chr(int(IampAlarm) + 4))
+        self.writeTransmitter("FAC", chr(int(IampAlarm) + 4), self.baudPower)
 
     # RDS COMMANDS
     @exportRpc("set-RDS")
     def setRDS(self, state):
-        self.writeTransmitter("PWR", state.encode('ascii', 'ignore'))
+        self.writeTransmitter("PWR", state.encode('ascii', 'ignore'), self.baudRDS)
 
     @exportRpc("PI-code")
     def setPICode(self, country, country_ecc, area_coverage, pr):
         if  0 <= int(pr) <= 255:
-            self.writeTransmitter("CCAC", str(int(country) * 16 + int(area_coverage)))
-            self.writeTransmitter("ECC", chr(int(country_ecc) + 4))
-            self.writeTransmitter("PREF", str(int(pr)))
+            self.writeTransmitter("CCAC", str(int(country) * 16 + int(area_coverage)), self.baudRDS)
+            self.writeTransmitter("ECC", chr(int(country_ecc) + 4), self.baudRDS)
+            self.writeTransmitter("PREF", str(int(pr)), self.baudRDS)
 
     @exportRpc("A0-settings")
     def setA0Settings(self, tp, ta, ms, dyn_pty, compression, channels, ah, program_type):
-        self.writeTransmitter("TP",tp.encode('ascii', 'ignore'))
-        self.writeTransmitter("TA",ta.encode('ascii', 'ignore'))
-        self.writeTransmitter("MS",ms.encode('ascii', 'ignore'))
-        self.writeTransmitter("Did3",dyn_pty.encode('ascii', 'ignore'))
-        self.writeTransmitter("Did2",compression.encode('ascii', 'ignore'))
-        self.writeTransmitter("Did0",channels.encode('ascii', 'ignore'))
-        self.writeTransmitter("Did1",ah.encode('ascii', 'ignore'))
-        self.writeTransmitter("PTY",program_type.encode('ascii', 'ignore'))
+        self.writeTransmitter("TP",tp.encode('ascii', 'ignore'), self.baudRDS)
+        self.writeTransmitter("TA",ta.encode('ascii', 'ignore'), self.baudRDS)
+        self.writeTransmitter("MS",ms.encode('ascii', 'ignore'), self.baudRDS)
+        self.writeTransmitter("Did3",dyn_pty.encode('ascii', 'ignore'), self.baudRDS)
+        self.writeTransmitter("Did2",compression.encode('ascii', 'ignore'), self.baudRDS)
+        self.writeTransmitter("Did0",channels.encode('ascii', 'ignore'), self.baudRDS)
+        self.writeTransmitter("Did1",ah.encode('ascii', 'ignore'), self.baudRDS)
+        self.writeTransmitter("PTY",program_type.encode('ascii', 'ignore'), self.baudRDS)
 
     @exportRpc("PF-alternative")
     # arrays in javascript are received as lists
@@ -167,7 +170,7 @@ class McuProtocol(LineReceiver):
                   AFNum+=1
               else:
                   break
-          self.writeTransmitter("AF0", chr(AFNum + 224 + 4))
+          self.writeTransmitter("AF0", chr(AFNum + 224 + 4), self.baudRDS)
 
           for k in range(0,AFNum):
               freq = float(freqs[k])
@@ -175,7 +178,7 @@ class McuProtocol(LineReceiver):
               # but are the ones used in the windows program
               if 87.6 <= freq <= 107.9:
                   freq_index = int((freq*1000 - 87500) / 100.0)
-                  self.writeTransmitter("AF" + str(k+1), chr(freq_index + 4))
+                  self.writeTransmitter("AF" + str(k+1), chr(freq_index + 4), self.baudRDS)
 
     @exportRpc("static-PS")
     def setStaticPS(self, msg):
@@ -183,31 +186,34 @@ class McuProtocol(LineReceiver):
             # translate from unicode, and add spaces up to 8 chars
             msg2 = msg.encode('ascii', 'ignore')
             msg2 = '%-8s' % msg2
-            self.writeTransmitter("PS00", msg2)
+            self.writeTransmitter("PS00", msg2, self.baudRDS)
             # set constant delay of 9 minutes
-            self.writeTransmitter("PD00", "9")
+            self.writeTransmitter("PD00", "9", self.baudRDS)
 
             # set all other PS to empty spaces and 0 minutes delay
             empty = "        "
             for k in range(1,100):
-                self.writeTransmitter("PS" + "%02d" %k, empty)
-                self.writeTransmitter("PD" + "%02d" %k, "0")
+                self.writeTransmitter("PS" + "%02d" %k, empty, self.baudRDS)
+                self.writeTransmitter("PD" + "%02d" %k, "0", self.baudRDS)
 
     @exportRpc("sync-time")
     def setSyncTime(self):
         t = datetime.datetime.now()
-        self.writeTransmitter("TIME", chr(t.hour + 4) + chr(t.minute + 4) + chr(t.second + 4))
-        self.writeTransmitter("DATE", chr(t.year - 2004 + 4) + chr(t.month + 4) + chr(t.day + 4))
+        self.writeTransmitter("TIME", chr(t.hour + 4) + chr(t.minute + 4) + chr(t.second + 4), self.baudRDS)
+        self.writeTransmitter("DATE", chr(t.year - 2004 + 4) + chr(t.month + 4) + chr(t.day + 4), self.baudRDS)
 
     @exportRpc("RT")
     def setExternalMessages(self, msg):
         if  0 < len(msg) <= 64:
             msg2 = msg.encode('ascii', 'ignore')
             msg2 = '%-64s' % msg2
-            self.writeTransmitter("RT", msg2)
+            self.writeTransmitter("RT", msg2, self.baudRDS)
 
-    def writeTransmitter(self, command, data):
+    def writeTransmitter(self, command, data, baudRate):
         try:
+            currentBaudRate = self.transport._serial.getBaudrate()
+            if currentBaudRate != baudRate:
+                self.transport._serial.setBaudrate(baudRate)
             self.transport.write('\x00\x00' + command + '\x01' + data + '\x02')
         except TypeError:
             print "Wrong type data"
@@ -264,9 +270,9 @@ class WsMcuFactory(WampServerFactory):
 
     protocol = WsMcuProtocol
 
-    def __init__(self, url):
+    def __init__(self, url, baudPower, baudRDS):
         WampServerFactory.__init__(self, url)
-        self.mcuProtocol = McuProtocol(self)
+        self.mcuProtocol = McuProtocol(self, baudPower, baudRDS)
 
 
 if __name__ == '__main__':
@@ -280,7 +286,8 @@ if __name__ == '__main__':
         print 'Try %s --help for usage details' % sys.argv[0]
         sys.exit(1)
 
-    baudrate = int(o.opts['baudrate'])
+    baudPower = int(o.opts['baudPower'])
+    baudRDS = int(o.opts['baudRDS'])
     port = o.opts['port']
     webport = int(o.opts['webport'])
     wsurl = o.opts['wsurl']
@@ -289,14 +296,14 @@ if __name__ == '__main__':
     log.startLogging(sys.stdout)
 
     ## create Serial2Ws gateway factory
-    wsMcuFactory = WsMcuFactory(wsurl)
+    wsMcuFactory = WsMcuFactory(wsurl, baudPower, baudRDS)
     ## calls reactor internally
     listenWS(wsMcuFactory)
 
     ## create serial port and serial port protocol
-    log.msg('About to open serial port %s [%d baud] ..' % (port, baudrate))
+    log.msg('About to open serial port %s [%d baud] ..' % (port, baudPower))
     serialPort = SerialPort(wsMcuFactory.mcuProtocol, port,\
-                           reactor, baudrate=baudrate)
+                           reactor, baudrate=baudPower)
 
     ## Looping Call to keep updating date and time on client
     lc = LoopingCall(wsMcuFactory.mcuProtocol.updateDatetime)
