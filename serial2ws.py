@@ -1,21 +1,3 @@
-###############################################################################
-##
-##  Copyright 2012 Tavendo GmbH
-##
-##  Licensed under the Apache License, Version 2.0 (the "License");
-##  you may not use this file except in compliance with the License.
-##  You may obtain a copy of the License at
-##
-##      http://www.apache.org/licenses/LICENSE-2.0
-##
-##  Unless required by applicable law or agreed to in writing, software
-##  distributed under the License is distributed on an "AS IS" BASIS,
-##  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-##  See the License for the specific language governing permissions and
-##  limitations under the License.
-##
-###############################################################################
-
 import sys
 import re
 import datetime
@@ -23,7 +5,6 @@ import datetime
 if sys.platform == 'win32':
     ## on windows, we need to use the following reactor for serial support
     ## http://twistedmatrix.com/trac/ticket/3802
-    ##
     from twisted.internet import win32eventreactor
     win32eventreactor.install()
 
@@ -54,17 +35,14 @@ class Serial2WsOptions(usage.Options):
 
 ## MCU protocol
 ## knows nothing about websockets
-##
 class McuProtocol(LineReceiver):
     delimiter = '$'
-    ## need a reference to our WS-MCU gateway factory to dispatch PubSub events
-    ##
 
+    ## need a reference to our WS-MCU gateway factory to dispatch PubSub events
     def __init__(self, wsMcuFactory):
         self.wsMcuFactory = wsMcuFactory
 
     ## this method is exported as RPC and can be called by connected clients
-    ##
     @exportRpc("read-tx")
     def readTX(self):
         self.writeTransmitter("FM", '\x20')
@@ -269,23 +247,19 @@ class McuProtocol(LineReceiver):
 ## WS-MCU protocol
 ## knows about websockets
 ## registers for RPC and PubSub
-##
 class WsMcuProtocol(WampServerProtocol):
 
     def onSessionOpen(self):
         ## register topic prefix under which we will publish MCU measurements
-        ##
         self.registerForPubSub("http://example.com/mcu#", True)
 
         ## register methods for RPC
-        ##
         self.registerForRpc(self.factory.mcuProtocol,
                                     "http://example.com/mcu-control#")
 
 
 ## WS-MCU factory
 ## knows about websockets
-##
 class WsMcuFactory(WampServerFactory):
 
     protocol = WsMcuProtocol
@@ -298,7 +272,6 @@ class WsMcuFactory(WampServerFactory):
 if __name__ == '__main__':
 
     ## parse options
-    ##
     o = Serial2WsOptions()
     try:
         o.parseOptions()
@@ -313,17 +286,14 @@ if __name__ == '__main__':
     wsurl = o.opts['wsurl']
 
     ## start Twisted log system
-    ##
     log.startLogging(sys.stdout)
 
     ## create Serial2Ws gateway factory
-    ##
     wsMcuFactory = WsMcuFactory(wsurl)
     ## calls reactor internally
     listenWS(wsMcuFactory)
 
     ## create serial port and serial port protocol
-    ##
     log.msg('About to open serial port %s [%d baud] ..' % (port, baudrate))
     serialPort = SerialPort(wsMcuFactory.mcuProtocol, port,\
                            reactor, baudrate=baudrate)
@@ -333,11 +303,9 @@ if __name__ == '__main__':
     lc.start(1)
 
     ## create embedded web server for static files
-    ##
     webdir = File(".")   # Resource
     web = Site(webdir)
     reactor.listenTCP(webport, web)
 
     ## start Twisted reactor ..
-    ##
     reactor.run()
