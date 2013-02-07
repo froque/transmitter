@@ -1,8 +1,6 @@
  * secure connection: ssl, etc
- * all RDS stuff
  * same port for websocket and html
- * rename files
- * check licenses of autobahn, jquery, etc
+ * Update README with instructions
 
 BUGS:
  * Bug Right is mapped to left and left to right in transmitter
