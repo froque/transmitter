@@ -1,1 +1,1 @@
-python serial2ws.py -s ws://localhost:8081 -p /dev/ttyUSB0 -b 9600
+serial2ws.py -s ws://localhost:8081 -p /dev/ttyUSB0 --baudPower=9600 --baudRDS=19200
