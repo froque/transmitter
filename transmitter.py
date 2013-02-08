@@ -18,8 +18,11 @@ from twisted.python import usage, log
 from twisted.protocols.basic import LineReceiver
 from twisted.internet.serialport import SerialPort
 from twisted.internet.task import LoopingCall
+from twisted.internet.ssl import DefaultOpenSSLContextFactory
 from twisted.web.server import Site
 from twisted.web.static import File
+
+from redirectscheme import RedirectToScheme
 
 from autobahn.websocket import listenWS
 from autobahn.wamp import WampServerFactory, WampServerProtocol, exportRpc
@@ -30,7 +33,8 @@ class Serial2WsOptions(usage.Options):
       ['baudPower', '', 9600, 'Serial baudrate for Power settings'],
       ['baudRDS', '', 19200, 'Serial baudrate for RDS settings'],
       ['port', 'p', '/dev/ttyUSB0', 'Serial port to use'],
-      ['webport', 'w', 8080, 'Web port to use for embedded Web server'],
+      ['webport', 'w', 80, 'Web port to use for embedded Web server'],
+      ['securewebport', '', 443, 'Secure Web port to use for embedded Web server'],
       ['wsurl', 's', "ws://localhost:9000",\
                     'WebSocket port to use for embedded WebSocket server']
     ]
@@ -292,6 +296,7 @@ if __name__ == '__main__':
     baudRDS = int(o.opts['baudRDS'])
     port = o.opts['port']
     webport = int(o.opts['webport'])
+    securewebport = int(o.opts['securewebport'])
     wsurl = o.opts['wsurl']
 
     ## start Twisted log system
@@ -311,10 +316,14 @@ if __name__ == '__main__':
     lc = LoopingCall(wsMcuFactory.mcuProtocol.updateDatetime)
     lc.start(1)
 
+    ## Redirect normal http to https
+    reactor.listenTCP(webport, Site(RedirectToScheme("https", securewebport)))
+
     ## create embedded web server for static files
     webdir = File(".")   # Resource
     web = Site(webdir)
-    reactor.listenTCP(webport, web)
+    reactor.listenSSL(securewebport, web, DefaultOpenSSLContextFactory(
+                                      'keys/server.key', 'keys/server.crt'))
 
     ## start Twisted reactor ..
     reactor.run()
