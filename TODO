@@ -1,4 +1,2 @@
- * secure connection: ssl, etc
  * same port for websocket and html
-
- * Correct constant websocket port in transmitter.js
+    * It does not seem to be supported and never will be in Autobahn Python
