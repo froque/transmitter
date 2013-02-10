@@ -15,6 +15,8 @@ from twisted.internet import reactor
 print "Using Twisted reactor", reactor.__class__
 print
 
+from zope.interface import implements
+
 from twisted.python import usage, log
 from twisted.protocols.basic import LineReceiver
 from twisted.internet.serialport import SerialPort
@@ -22,6 +24,10 @@ from twisted.internet.task import LoopingCall
 from twisted.internet.ssl import DefaultOpenSSLContextFactory
 from twisted.web.server import Site
 from twisted.web.static import File
+from twisted.web.guard import HTTPAuthSessionWrapper, DigestCredentialFactory
+from twisted.web.resource import IResource
+from twisted.cred.portal import IRealm, Portal
+from twisted.cred.checkers import FilePasswordDB
 
 from redirectscheme import RedirectToScheme
 
@@ -291,6 +297,18 @@ def replaceWebSocketPort(wsport):
         else:
             print line,
 
+## Realm needed for Authentication
+class SimpleRealm(object):
+    implements(IRealm)
+
+    def __init__(self, Resource):
+        self.resource = Resource
+
+    def requestAvatar(self, avatarId, mind, *interfaces):
+        if IResource in interfaces:
+            return IResource, self.resource, lambda: None
+        raise NotImplementedError()
+
 
 if __name__ == '__main__':
 
@@ -340,7 +358,15 @@ if __name__ == '__main__':
     ## create embedded web server for static files
     webdir = File(".")   # Resource
     web = Site(webdir)
-    reactor.listenSSL(securewebport, web, DefaultOpenSSLContextFactory(
+
+    ## necessary stuff for authentication
+    checkers = [FilePasswordDB('httpd.password')]
+    portal = Portal(SimpleRealm(web), checkers)
+    credentialFactory = DigestCredentialFactory("md5", "localhost")
+    wrapper = HTTPAuthSessionWrapper(portal, [credentialFactory])
+
+    ## start listening on secure port
+    reactor.listenSSL(securewebport, Site(wrapper), DefaultOpenSSLContextFactory(
                                       'keys/server.key', 'keys/server.crt'))
 
     ## start Twisted reactor ..

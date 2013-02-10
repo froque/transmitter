@@ -35,6 +35,10 @@ The following commands could be executaded:
 Notes:
   On Firefox the self-signed certificate must be accepted for two ports: the https and the websocket.
 
+Users and Passwords:
+Create a file named "httpd.password" with users and passwords. The syntax is "joe:qwerty".
+
+
 Details:
 The transmitter has the special tags @DATE and @TIME for the RDS PS option. 
 The transmitter has support for rolling PS, but that is not implemented.
