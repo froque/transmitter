@@ -10,14 +10,17 @@ AutobahnPython 0.5.14
 
 Usage: transmitter.py [options]
 Options:
-      --baudPower=  Serial baudrate for Power settings [default: 9600]
-      --baudRDS=    Serial baudrate for RDS settings [default: 19200]
-  -p, --port=       Serial port to use [default: /dev/ttyUSB0]
-  -w, --webport=    Web port to use for embedded Web server [default: 8080]
-  -s, --wsurl=      WebSocket port to use for embedded WebSocket server
-                    [default: ws://localhost:9000]
-      --version     Display Twisted version and exit.
-      --help        Display this help and exit.
+      --baudPower=      Serial baudrate for Power settings [default: 9600]
+      --baudRDS=        Serial baudrate for RDS settings [default: 19200]
+  -p, --port=           Serial port to use [default: /dev/ttyUSB0]
+  -w, --webport=        Web port to use for embedded Web server [default: 80]
+      --securewebport=  Secure Web port to use for embedded Web server [default:
+                        443]
+  -s, --websocketport=  WebSocket port to use for embedded WebSocket server
+                        [default: 9000]
+      --version         Display Twisted version and exit.
+      --help            Display this help and exit.
+
 
 
 Example:
