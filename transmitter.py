@@ -286,8 +286,10 @@ class WsMcuFactory(WampServerFactory):
 ## Maybe a better could be used.
 def replaceWebSocketPort(wsport):
     for line in fileinput.input("transmitter.js", inplace = 1):
-        print line.replace('var wsuri = "wss://" + window.location.hostname + ":9000";',
-                       'var wsuri = "wss://" + window.location.hostname + ":' + str(wsport) +'";'),
+        if line.startswith('var wsuri = "wss://" + window.location.hostname'):
+            print 'var wsuri = "wss://" + window.location.hostname + ":' + str(wsport) +'";'
+        else:
+            print line,
 
 
 if __name__ == '__main__':
