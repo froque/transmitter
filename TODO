@@ -1,3 +1,4 @@
  * secure connection: ssl, etc
  * same port for websocket and html
 
+ * Correct constant websocket port in transmitter.js
