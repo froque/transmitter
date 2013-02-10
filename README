@@ -22,7 +22,7 @@ Options:
 
 Example:
 
-./transmitter.py -s ws://localhost:8081 -p /dev/ttyUSB0 --baudPower=9600 --baudRDS=19200
+./transmitter.py -s 8081 -p /dev/ttyUSB0 --baudPower=9600 --baudRDS=19200
 
 
 SSL Certificate for HTTTPS:
@@ -31,6 +31,9 @@ The following commands could be executaded:
   mkdir keys
   openssl genrsa 2048 > keys/server.key
   openssl req -new -x509 -nodes -sha1 -days 365 -key keys/server.key > keys/server.crt
+
+Notes:
+  On Firefox the self-signed certificate must be accepted for two ports: the https and the websocket.
 
 Details:
 The transmitter has the special tags @DATE and @TIME for the RDS PS option. 

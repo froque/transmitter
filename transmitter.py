@@ -24,7 +24,7 @@ from twisted.web.static import File
 
 from redirectscheme import RedirectToScheme
 
-from autobahn.websocket import listenWS
+from autobahn.websocket import listenWS, createWsUrl
 from autobahn.wamp import WampServerFactory, WampServerProtocol, exportRpc
 
 
@@ -35,7 +35,7 @@ class Serial2WsOptions(usage.Options):
       ['port', 'p', '/dev/ttyUSB0', 'Serial port to use'],
       ['webport', 'w', 80, 'Web port to use for embedded Web server'],
       ['securewebport', '', 443, 'Secure Web port to use for embedded Web server'],
-      ['wsurl', 's', "ws://localhost:9000",\
+      ['websocketport', 's', "9000",\
                     'WebSocket port to use for embedded WebSocket server']
     ]
 
@@ -297,15 +297,19 @@ if __name__ == '__main__':
     port = o.opts['port']
     webport = int(o.opts['webport'])
     securewebport = int(o.opts['securewebport'])
-    wsurl = o.opts['wsurl']
+    wsport = int(o.opts['websocketport'])
 
     ## start Twisted log system
     log.startLogging(sys.stdout)
 
+    ## Create a secure websocket url
+    wsurl = createWsUrl("localhost", wsport, True)
+
     ## create Serial2Ws gateway factory
     wsMcuFactory = WsMcuFactory(wsurl, baudPower, baudRDS)
     ## calls reactor internally
-    listenWS(wsMcuFactory)
+    listenWS(wsMcuFactory, DefaultOpenSSLContextFactory(
+                                      'keys/server.key', 'keys/server.crt'))
 
     ## create serial port and serial port protocol
     log.msg('About to open serial port %s [%d baud] ..' % (port, baudPower))

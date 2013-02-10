@@ -1,5 +1,5 @@
 var sess = null;
-var wsuri = "ws://" + window.location.hostname + ":8081";
+var wsuri = "wss://" + window.location.hostname + ":8081";
 var retryCount = 0;
 var retryDelay = 2;
 var winterval;
