@@ -3,6 +3,7 @@
 import sys
 import re
 import datetime
+import fileinput
 
 if sys.platform == 'win32':
     ## on windows, we need to use the following reactor for serial support
@@ -281,6 +282,14 @@ class WsMcuFactory(WampServerFactory):
         self.mcuProtocol = McuProtocol(self, baudPower, baudRDS)
 
 
+## Used to replace in "transmitter.js" the choosen port for websocket.
+## Maybe a better could be used.
+def replaceWebSocketPort(wsport):
+    for line in fileinput.input("transmitter.js", inplace = 1):
+        print line.replace('var wsuri = "wss://" + window.location.hostname + ":9000";',
+                       'var wsuri = "wss://" + window.location.hostname + ":' + str(wsport) +'";'),
+
+
 if __name__ == '__main__':
 
     ## parse options
@@ -301,6 +310,9 @@ if __name__ == '__main__':
 
     ## start Twisted log system
     log.startLogging(sys.stdout)
+
+    ## Replace websocket port
+    replaceWebSocketPort(wsport)
 
     ## Create a secure websocket url
     wsurl = createWsUrl("localhost", wsport, True)
